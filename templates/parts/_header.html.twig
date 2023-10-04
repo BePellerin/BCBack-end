@@ -1,5 +1,5 @@
-{% if app.user %}
-	{% if  app.user.roles("ROLE_ADMIN") %}
+
+	{% if  app.user and app.user.roles("ROLE_ADMIN") %}
 
 		<nav class="navbar navbar-expand-lg navbar-light bg-light container">
 			<a class="navbar-brand col-lg-2" style="color: #00b894" href="#">Viper.co Administration</a>
@@ -47,4 +47,4 @@
 			</div>
 		</nav>
 	{% endif %}
-{% endif %}
+

@@ -31,6 +31,9 @@ class Drop
     #[ORM\Column]
     private ?int $launchPrice = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $webSiteUrl = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,6 +95,18 @@ class Drop
     public function setLaunchPrice(int $launchPrice): static
     {
         $this->launchPrice = $launchPrice;
+
+        return $this;
+    }
+
+    public function getWebSiteUrl(): ?string
+    {
+        return $this->webSiteUrl;
+    }
+
+    public function setWebSiteUrl(?string $webSiteUrl): static
+    {
+        $this->webSiteUrl = $webSiteUrl;
 
         return $this;
     }

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Collecs{% endblock %}
+
+{% block body %}
+    <h1>Collecs</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ collec.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ collec.title }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ collec.description }}</td>
+            </tr>
+            <tr>
+                <th>CoverPict</th>
+                <td>{{ collec.coverPict }}</td>
+            </tr>
+            <tr>
+                <th>AvatarPict</th>
+                <td>{{ collec.avatarPict }}</td>
+            </tr>
+            <tr>
+                <th>Blockchain</th>
+                <td>{{ collec.blockchain }}</td>
+            </tr>
+            <tr>
+                <th>WebsiteUrl</th>
+                <td>{{ collec.websiteUrl }}</td>
+            </tr>
+            <tr>
+                <th>Category</th>
+                <td>{{ collec.category }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_collecs_index') }}">back to list</a>
+
+    <a href="{{ path('app_collecs_edit', {'id': collec.id}) }}">edit</a>
+
+    {{ include('collecs/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Drop{% endblock %}
+
+{% block body %}
+    <h1>Drop</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ drop.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ drop.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ drop.description }}</td>
+            </tr>
+            <tr>
+                <th>NftQuantity</th>
+                <td>{{ drop.nftQuantity }}</td>
+            </tr>
+            <tr>
+                <th>Category</th>
+                <td>{{ drop.category }}</td>
+            </tr>
+            <tr>
+                <th>LaunchPrice</th>
+                <td>{{ drop.launchPrice }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_drop_index') }}">back to list</a>
+
+    <a href="{{ path('app_drop_edit', {'id': drop.id}) }}">edit</a>
+
+    {{ include('drop/_delete_form.html.twig') }}
+{% endblock %}

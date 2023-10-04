@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Collecs index{% endblock %}
+
+{% block body %}
+    <h1>Collecs index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>CoverPict</th>
+                <th>AvatarPict</th>
+                <th>Blockchain</th>
+                <th>WebsiteUrl</th>
+                <th>Category</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for collec in collecs %}
+            <tr>
+                <td>{{ collec.id }}</td>
+                <td>{{ collec.title }}</td>
+                <td>{{ collec.description }}</td>
+                <td>{{ collec.coverPict }}</td>
+                <td>{{ collec.avatarPict }}</td>
+                <td>{{ collec.blockchain }}</td>
+                <td>{{ collec.websiteUrl }}</td>
+                <td>{{ collec.category }}</td>
+                <td>
+                    <a href="{{ path('app_collecs_show', {'id': collec.id}) }}">show</a>
+                    <a href="{{ path('app_collecs_edit', {'id': collec.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_collecs_new') }}">Create new</a>
+{% endblock %}
