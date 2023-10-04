@@ -1,0 +1,21 @@
+{# templates/bundles/TwigBundle/Exception/error404.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{% if app.user %}
+
+	<section class="container">
+
+		<h1>Page non trouvé</h1>
+
+		<p>
+			<a href="{{ path('app_default') }}">Retourner à l'acceuil</a>
+		</p>
+	</section>
+{% endif %}
+
+{% if app.user is null %}
+	<p class="container">
+
+	<a href="{{ path('app_login') }}">Veuillez vous connecter</a>
+</p>{% endif %}{% endblock %}
