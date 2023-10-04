@@ -7,15 +7,16 @@ use App\Repository\CollecsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+// use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+// use Symfony\Component\Validator\Constraints as Assert;
 // use ApiPlatform\Core\Annotation\ApiProperty;
 #[ORM\Entity(repositoryClass: CollecsRepository::class)]
 #[ApiResource]
-class Collecs extends AbstractController
+class Collecs
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -36,11 +37,13 @@ class Collecs extends AbstractController
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $websiteUrl = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $category = null;
-
     #[ORM\OneToMany(mappedBy: 'collec', targetEntity: Nft::class, orphanRemoval: true)]
+    #[ORM\JoinColumn(nullable: true)]
     private Collection $nfts;
+
+    #[ORM\ManyToOne(inversedBy: 'collecs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
     public function __construct()
     {
@@ -124,18 +127,6 @@ class Collecs extends AbstractController
         return $this;
     }
 
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(string $category): static
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Nft>
      */
@@ -162,6 +153,18 @@ class Collecs extends AbstractController
                 $nft->setCollec(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

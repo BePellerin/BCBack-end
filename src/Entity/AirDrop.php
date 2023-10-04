@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\DropRepository;
+use App\Repository\AirDropRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: DropRepository::class)]
-#[ORM\Table(name: '`drop`')]
+#[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource]
-class Drop
+class AirDrop
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\Drop;
+use App\Entity\AirDrop;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Drop>
+ * @extends ServiceEntityRepository<AirDrop>
  *
- * @method Drop|null find($id, $lockMode = null, $lockVersion = null)
- * @method Drop|null findOneBy(array $criteria, array $orderBy = null)
- * @method Drop[]    findAll()
- * @method Drop[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method AirDrop|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AirDrop|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AirDrop[]    findAll()
+ * @method AirDrop[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DropRepository extends ServiceEntityRepository
+class AirDropRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Drop::class);
+        parent::__construct($registry, AirDrop::class);
     }
 
 //    /**
-//     * @return Drop[] Returns an array of Drop objects
+//     * @return AirDrop[] Returns an array of AirDrop objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class DropRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Drop
+//    public function findOneBySomeField($value): ?AirDrop
 //    {
 //        return $this->createQueryBuilder('d')
 //            ->andWhere('d.exampleField = :val')
