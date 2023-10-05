@@ -6,44 +6,45 @@
 {% block body %}
 	<section class="container">
 
-		<h1>AirDrop index</h1>
+		<h1 class="m-5">AirDrop index</h1>
 
-		<table class="table">
-			<thead>
+
+		<table class="table ">
+			<thead class="table-primary">
+
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th>NftQuantity</th>
+				<th>Category</th>
+				<th>LaunchPrice</th>
+				<th>WebSiteUrl</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for air_drop in air_drops %}
 				<tr>
-					<th>Id</th>
-					<th>Name</th>
-					<th>Description</th>
-					<th>NftQuantity</th>
-					<th>Category</th>
-					<th>LaunchPrice</th>
-					<th>WebSiteUrl</th>
-					<th>actions</th>
+					<td>{{ air_drop.id }}</td>
+					<td>{{ air_drop.name }}</td>
+					<td>{{ air_drop.description }}</td>
+					<td>{{ air_drop.nftQuantity }}</td>
+					<td>{{ air_drop.category }}</td>
+					<td>{{ air_drop.launchPrice }}</td>
+					<td>{{ air_drop.webSiteUrl }}</td>
+					<td>
+						<a href="{{ path('app_air_drop_show', {'id': air_drop.id}) }}">show</a>
+						<a href="{{ path('app_air_drop_edit', {'id': air_drop.id}) }}">edit</a>
+					</td>
 				</tr>
-			</thead>
-			<tbody>
-				{% for air_drop in air_drops %}
-					<tr>
-						<td>{{ air_drop.id }}</td>
-						<td>{{ air_drop.name }}</td>
-						<td>{{ air_drop.description }}</td>
-						<td>{{ air_drop.nftQuantity }}</td>
-						<td>{{ air_drop.category }}</td>
-						<td>{{ air_drop.launchPrice }}</td>
-						<td>{{ air_drop.webSiteUrl }}</td>
-						<td>
-							<a href="{{ path('app_air_drop_show', {'id': air_drop.id}) }}">show</a>
-							<a href="{{ path('app_air_drop_edit', {'id': air_drop.id}) }}">edit</a>
-						</td>
-					</tr>
-				{% else %}
-					<tr>
-						<td colspan="8">no records found</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+			{% else %}
+				<tr>
+					<td colspan="8">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 
-		<a href="{{ path('app_air_drop_new') }}">Create new</a>
-	</section>
-{% endblock %}
+	<a href="{{ path('app_air_drop_new') }}">Create new</a>
+</section>{% endblock %}
