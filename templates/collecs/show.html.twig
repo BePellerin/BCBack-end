@@ -3,6 +3,8 @@
 {% block title %}Collecs{% endblock %}
 
 {% block body %}
+<section class="container">
+
     <h1>Collecs</h1>
 
     <table class="table">
@@ -46,5 +48,6 @@
 
     <a href="{{ path('app_collecs_edit', {'id': collec.id}) }}">edit</a>
 
-    {{ include('collecs/_delete_form.html.twig') }}
+{{ include('collecs/_delete_form.html.twig') }}</section>
+
 {% endblock %}

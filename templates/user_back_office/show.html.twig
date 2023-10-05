@@ -3,6 +3,8 @@
 {% block title %}UserBackOffice{% endblock %}
 
 {% block body %}
+<section class="container">
+
     <h1>UserBackOffice</h1>
 
     <table class="table">
@@ -30,5 +32,6 @@
 
     <a href="{{ path('app_user_back_office_edit', {'id': user_back_office.id}) }}">edit</a>
 
-    {{ include('user_back_office/_delete_form.html.twig') }}
+{{ include('user_back_office/_delete_form.html.twig') }}</section>
+
 {% endblock %}

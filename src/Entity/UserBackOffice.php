@@ -26,7 +26,11 @@ class UserBackOffice implements UserInterface, PasswordAuthenticatedUserInterfac
      */
     #[ORM\Column]
     private ?string $password = null;
-
+    
+    public function __toString()
+    {
+        return $this->username;
+    }
     public function getId(): ?int
     {
         return $this->id;

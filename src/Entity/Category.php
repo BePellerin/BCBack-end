@@ -22,7 +22,11 @@ class Category
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Collecs::class)]
     private Collection $collecs;
-
+    
+    public function __toString()
+    {
+        return $this->libelle;
+    }
     public function __construct()
     {
         $this->collecs = new ArrayCollection();

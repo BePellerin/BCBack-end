@@ -44,7 +44,10 @@ class Collecs
     #[ORM\ManyToOne(inversedBy: 'collecs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
-
+    public function __toString()
+    {
+        return $this->title;
+    }
     public function __construct()
     {
         $this->nfts = new ArrayCollection();

@@ -3,11 +3,32 @@
 {% block title %}Edit UserBackOffice{% endblock %}
 
 {% block body %}
+<section class="container">
+
     <h1>Edit UserBackOffice</h1>
 
     {{ include('user_back_office/_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('app_user_back_office_index') }}">back to list</a>
 
-    {{ include('user_back_office/_delete_form.html.twig') }}
+{{ include('user_back_office/_delete_form.html.twig') }}</section>
+
+{% endblock %}
+{% block stylesheets %}
+	<style>
+
+		label {
+			display: block;
+			width: 150px;
+			color: #0984e3;
+		}
+		input {
+			width: 300px;
+		}
+		.btn {
+			background-color: #54a0ff;
+			color: white;
+			margin-top: 5px;
+		}
+	</style>
 {% endblock %}

@@ -2,12 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\Drop;
+use App\Entity\AirDrop;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DropType extends AbstractType
+class AirDropType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -17,13 +17,14 @@ class DropType extends AbstractType
             ->add('nftQuantity')
             ->add('category')
             ->add('launchPrice')
+            ->add('webSiteUrl')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Drop::class,
+            'data_class' => AirDrop::class,
         ]);
     }
 }

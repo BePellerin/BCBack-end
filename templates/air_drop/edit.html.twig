@@ -1,15 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New UserBackOffice{% endblock %}
+{% block title %}Edit AirDrop{% endblock %}
 
 {% block body %}
 <section class="container">
 
-    <h1>Create new UserBackOffice</h1>
+    <h1>Edit AirDrop</h1>
 
-    {{ include('user_back_office/_form.html.twig') }}
+    {{ include('air_drop/_form.html.twig', {'button_label': 'Update'}) }}
 
-<a href="{{ path('app_user_back_office_index') }}">back to list</a></section>
+    <a href="{{ path('app_air_drop_index') }}">back to list</a>
+
+{{ include('air_drop/_delete_form.html.twig') }}</section>
 
 {% endblock %}
 {% block stylesheets %}
@@ -30,3 +32,4 @@
 		}
 	</style>
 {% endblock %}
+

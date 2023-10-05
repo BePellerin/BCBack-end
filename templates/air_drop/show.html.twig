@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AirDrop{% endblock %}
+
+{% block body %}
+<section class="container">
+
+    <h1>AirDrop</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ air_drop.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ air_drop.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ air_drop.description }}</td>
+            </tr>
+            <tr>
+                <th>NftQuantity</th>
+                <td>{{ air_drop.nftQuantity }}</td>
+            </tr>
+            <tr>
+                <th>Category</th>
+                <td>{{ air_drop.category }}</td>
+            </tr>
+            <tr>
+                <th>LaunchPrice</th>
+                <td>{{ air_drop.launchPrice }}</td>
+            </tr>
+            <tr>
+                <th>WebSiteUrl</th>
+                <td>{{ air_drop.webSiteUrl }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_air_drop_index') }}">back to list</a>
+
+    <a href="{{ path('app_air_drop_edit', {'id': air_drop.id}) }}">edit</a>
+
+{{ include('air_drop/_delete_form.html.twig') }}</section>
+
+{% endblock %}

@@ -42,7 +42,10 @@ class Nft
 
     #[ORM\OneToMany(mappedBy: 'nft', targetEntity: History::class, orphanRemoval: true)]
     private Collection $histories;
-
+    public function __toString()
+    {
+        return $this->title;
+    }
     public function __construct()
     {
         $this->histories = new ArrayCollection();

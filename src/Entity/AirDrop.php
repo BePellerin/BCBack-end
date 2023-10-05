@@ -33,6 +33,10 @@ class AirDrop
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $webSiteUrl = null;
 
+    public function __toString()
+    {
+        return $this->name;
+    }
     public function getId(): ?int
     {
         return $this->id;

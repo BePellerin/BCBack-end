@@ -3,9 +3,30 @@
 {% block title %}New Collecs{% endblock %}
 
 {% block body %}
+<section class="container">
+
     <h1>Create new Collecs</h1>
 
     {{ include('collecs/_form.html.twig') }}
 
-    <a href="{{ path('app_collecs_index') }}">back to list</a>
+<a href="{{ path('app_collecs_index') }}">back to list</a></section>
+
+{% endblock %}
+{% block stylesheets %}
+	<style>
+
+		label {
+			display: block;
+			width: 150px;
+			color: #0984e3;
+		}
+		input {
+			width: 300px;
+		}
+		.btn {
+			background-color: #54a0ff;
+			color: white;
+			margin-top: 5px;
+		}
+	</style>
 {% endblock %}

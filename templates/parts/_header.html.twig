@@ -9,12 +9,12 @@
 
 			<ul class="navbar-nav">
 				<li class="nav-item active">
-					<a class="nav-link" style="color: #0984e3" href="{{ path('app_default') }}">Home
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_default') }}">Acceuil
 						<span class="sr-only">(current)</span>
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color: #0984e3" href="{{ path('app_user_back_office_index') }}">Utilisateur</a>
+					<a class="nav-link" style="color: #0984e3" href="">Utilisateurs</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" style="color: #0984e3" href="{{ path('app_collecs_index') }}">Collections</a>
@@ -23,18 +23,30 @@
 					<a class="nav-link" style="color: #0984e3" href="{{ path('app_nft_index') }}">Nfts</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color: #0984e3" href="{{ path('app_airdrop_index') }}">Drop</a>
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_air_drop_index') }}">Airdrop</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color: #0984e3" href="{{ path('app_history_index') }}">History</a>
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_history_index') }}">Historique</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" style="color: #0984e3" href="{{ path('app_category_index') }}">Categories</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" style="color: #ff7675" href="{{ path('app_logout') }}">Se déconnecter</a>
-				</li>
 			</ul>
 		</div>
+
+		<div class=" col-lg-1"></div>
+
+		<ul class="navbar-nav">
+
+			<div class="d-flex justify-content-between">
+				<li class="nav-item">
+					<a class="nav-link" style="color: #e17055" href="{{ path('app_user_back_office_index') }}">Votre compte</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: #d63031" href="{{ path('app_logout') }}">Se déconnecter</a>
+				</li>
+			</div>
+		</ul>
+
 	</nav>
 {% endif %}
