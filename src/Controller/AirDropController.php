@@ -19,8 +19,8 @@ class AirDropController extends AbstractController
     #[Route('/', name: 'app_airdrop_index', methods: ['GET'])]
     public function index(AirDropRepository $airdropRepository): Response
     {
-        return $this->render('airdrop/index.html.twig', [
-            'airdrops' => $airdropRepository->findAll(),
+        return $this->render('drop/index.html.twig', [
+            'drops' => $airdropRepository->findAll(),
         ]);
     }
 
@@ -38,8 +38,8 @@ class AirDropController extends AbstractController
             return $this->redirectToRoute('app_airdrop_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('airdrop/new.html.twig', [
-            'airdrop' => $airdrop,
+        return $this->render('drop/new.html.twig', [
+            'drop' => $airdrop,
             'form' => $form,
         ]);
     }
@@ -47,7 +47,7 @@ class AirDropController extends AbstractController
     #[Route('/{id}', name: 'app_airdrop_show', methods: ['GET'])]
     public function show(AirDrop $airdrop): Response
     {
-        return $this->render('airdrop/show.html.twig', [
+        return $this->render('drop/show.html.twig', [
             'airdrop' => $airdrop,
         ]);
     }
@@ -64,7 +64,7 @@ class AirDropController extends AbstractController
             return $this->redirectToRoute('app_airdrop_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('airdrop/edit.html.twig', [
+        return $this->render('drop/edit.html.twig', [
             'airdrop' => $airdrop,
             'form' => $form,
         ]);

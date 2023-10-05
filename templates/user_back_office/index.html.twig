@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UserBackOffice index{% endblock %}
+
+{% block body %}
+    <h1>UserBackOffice index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Roles</th>
+                <th>Password</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user_back_office in user_back_offices %}
+            <tr>
+                <td>{{ user_back_office.id }}</td>
+                <td>{{ user_back_office.username }}</td>
+                <td>{{ user_back_office.roles ? user_back_office.roles|json_encode : '' }}</td>
+                <td>{{ user_back_office.password }}</td>
+                <td>
+                    <a href="{{ path('app_user_back_office_show', {'id': user_back_office.id}) }}">show</a>
+                    <a href="{{ path('app_user_back_office_edit', {'id': user_back_office.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_back_office_new') }}">Create new</a>
+{% endblock %}

@@ -3,6 +3,8 @@
 {% block title %}Drop index{% endblock %}
 
 {% block body %}
+<section class="container">
+
     <h1>Drop index</h1>
 
     <table class="table">
@@ -27,8 +29,8 @@
                 <td>{{ drop.category }}</td>
                 <td>{{ drop.launchPrice }}</td>
                 <td>
-                    <a href="{{ path('app_drop_show', {'id': drop.id}) }}">show</a>
-                    <a href="{{ path('app_drop_edit', {'id': drop.id}) }}">edit</a>
+                    <a href="{{ path('app_airdrop_show', {'id': drop.id}) }}">show</a>
+                    <a href="{{ path('app_airdrop_edit', {'id': drop.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -39,5 +41,6 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_drop_new') }}">Create new</a>
+    <a href="{{ path('app_airdrop_new') }}">Create new</a>
+    </section>
 {% endblock %}

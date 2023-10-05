@@ -43,6 +43,7 @@ security:
          - { path: ^/history, roles: ROLE_ADMIN }
          - { path: ^/drop, roles: ROLE_ADMIN }
          - { path: ^/collecs, roles: ROLE_ADMIN }
+         - { path: ^/category, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

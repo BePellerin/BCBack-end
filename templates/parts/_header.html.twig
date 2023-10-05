@@ -1,50 +1,40 @@
+{% if  app.user and app.user.roles("ROLE_ADMIN") %}
 
-	{% if  app.user and app.user.roles("ROLE_ADMIN") %}
+	<nav class="navbar navbar-expand-lg navbar-light bg-light container">
+		<a class="navbar-brand col-lg-2" style="color: #00b894" href="#">Viper.co Administration</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse col-lg-4" id="navbarNav">
 
-		<nav class="navbar navbar-expand-lg navbar-light bg-light container">
-			<a class="navbar-brand col-lg-2" style="color: #00b894" href="#">Viper.co Administration</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse col-lg-4" id="navbarNav">
-
-				<ul class="navbar-nav">
-					<li class="nav-item active">
-						<a class="nav-link" style="color: #0984e3" href="#">Home
-							<span class="sr-only">(current)</span>
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" style="color: #0984e3" href="">Utilisateur</a>
-
-
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" style="color: #0984e3" href="">Collections</a>
-
-
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" style="color: #0984e3" href="">Nfts</a>
-
-
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" style="color: #0984e3" href="">Drop</a>
-
-
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" style="color: #0984e3" href="">History</a>
-
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" style="color: #ff7675" href="{{ path('app_logout') }}">Se déconnecter</a>
-
-
-					</li>
-				</ul>
-			</div>
-		</nav>
-	{% endif %}
-
+			<ul class="navbar-nav">
+				<li class="nav-item active">
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_default') }}">Home
+						<span class="sr-only">(current)</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_user_back_office_index') }}">Utilisateur</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_collecs_index') }}">Collections</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_nft_index') }}">Nfts</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_airdrop_index') }}">Drop</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_history_index') }}">History</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: #0984e3" href="{{ path('app_category_index') }}">Categories</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: #ff7675" href="{{ path('app_logout') }}">Se déconnecter</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+{% endif %}

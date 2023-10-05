@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New UserBackOffice{% endblock %}
+
+{% block body %}
+    <h1>Create new UserBackOffice</h1>
+
+    {{ include('user_back_office/_form.html.twig') }}
+
+    <a href="{{ path('app_user_back_office_index') }}">back to list</a>
+{% endblock %}
