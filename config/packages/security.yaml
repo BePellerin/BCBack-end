@@ -7,44 +7,31 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\UserBackOffice
-                property: username
+                class: App\Entity\User
+                property: email
+        # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        login:
-            pattern: ^/api/login
-            stateless: true
-            anonymous: true
-            json_login:
-                checkout: /api/login_check
-                success_handler: lexit_jwt_authentication.handler.authentication_success
-                failure_handler: lexit_jwt_authentication.handler.authentication_failure
-        api:
-            pattern: ^/api
-            stateless: true
-            guard:
-                authenticators:
-                    - lexit_jwt_authentication.jwt_token_authenticator
         main:
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\LoginFormAuthenticator
-        logout:
-            path: app_logout
-            target: app_login
-        custom_authenticator: App\Security\UserAuthenticator
-        entry_point: form_login
-        remember_me:
-            secret: '%kernel.secret%'
-            lifetime: 86400
-            path: /
-            always_remember_me: true
-            # where to redirect after logout
-            # target: app_any_route
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                always_remember_me: true
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
+
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
@@ -58,9 +45,6 @@ security:
          - { path: ^/drop, roles: ROLE_ADMIN }
          - { path: ^/collecs, roles: ROLE_ADMIN }
          - { path: ^/category, roles: ROLE_ADMIN }
-         - { path: ^/api/login, roles: PUBLIC_ACCESS }
-         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-         
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
