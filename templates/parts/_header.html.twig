@@ -40,7 +40,10 @@
 
 			<div class="d-flex justify-content-between">
 				<li class="nav-item">
-					<a class="nav-link" style="color: #e17055" href="{{ path('app_user_back_office_index') }}">Votre compte</a>
+<a class="nav-link" style="color: #e17055" href="{{ path('app_user_show', {'id': app.user.id}) }}">Votre compte</a>
+
+
+
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" style="color: #d63031" href="{{ path('app_logout') }}">Se déconnecter</a>

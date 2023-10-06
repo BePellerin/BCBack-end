@@ -27,12 +27,11 @@
 			</thead>
 			<tbody>
 				{% for nft in nfts %}
-<tr class="table table-striped"></tr>
-
+					<tr class="table">
 						<td>{{ nft.id }}</td>
 						<td>{{ nft.title }}</td>
 						<td>{{ nft.description }}</td>
-						<td>{{ nft.ceatedAt ? nft.ceatedAt|date('Y-m-d H:i:s') : '' }}</td>
+						<td>{{ nft.ceatedAt ? nft.ceatedAt|date('Y-m-d H:i:s') : 'NULL' }}</td>
 						<td>{{ nft.price }}</td>
 						<td>{{ nft.pict }}</td>
 						<td>{{ nft.creator }}</td>
@@ -45,7 +44,7 @@
 					</tr>
 				{% else %}
 					<tr>
-						<td colspan="8">no records found</td>
+						<td colspan="10">no records found</td>
 					</tr>
 				{% endfor %}
 			</tbody>

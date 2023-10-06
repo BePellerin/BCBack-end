@@ -42,6 +42,10 @@ class Nft
 
     #[ORM\OneToMany(mappedBy: 'nft', targetEntity: History::class, orphanRemoval: true)]
     private Collection $histories;
+
+    #[ORM\ManyToOne(inversedBy: 'nfts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
     public function __toString()
     {
         return $this->title;
@@ -166,6 +170,18 @@ class Nft
                 $history->setNft(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

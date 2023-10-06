@@ -18,7 +18,7 @@
 					<th>Status</th>
 					<th>CreatedAt</th>
 					<th>UpdatedAt</th>
-					<th>Id des collections</th>
+					{# <th>Id des collections</th> #}
 					<th>actions</th>
 
 				</tr>
@@ -30,19 +30,22 @@
 						<td>{{ user.email }}</td>
 						<td>{{ user.username }}</td>
 						<td>{{ user.status ? 'Yes' : 'No' }}</td>
-						<td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-						<td>{{ user.updatedAt ? user.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-						<td>{{ user.collec.id }}</td>
-						<a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-						<a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+						<td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : 'NULL' }}</td>
+						<td>{{ user.updatedAt ? user.updatedAt|date('Y-m-d H:i:s') : 'NULL' }}</td>
+						{# <td>{{ user.collec.id }}</td> #}
+						<td>
+
+							<a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
+							<a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+						</td>
+
 					</tr>
 				</td>
 			</tbody>
 		</tr>
 	{% else %}
 		<tr>
-			<td colspan="15">no records found</td>
+			<td colspan="7">no records found</td>
 		</tr>
 	{% endfor %}
 </tbody></table><a href="{{ path('app_user_new') }}">Create new</a></section>{% endblock %}
-
