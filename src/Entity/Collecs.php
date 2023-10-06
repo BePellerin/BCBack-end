@@ -44,10 +44,19 @@ class Collecs
     #[ORM\ManyToOne(inversedBy: 'collecs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'collecs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __toString()
     {
         return $this->title;
     }
+    
     public function __construct()
     {
         $this->nfts = new ArrayCollection();
@@ -168,6 +177,30 @@ class Collecs
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
