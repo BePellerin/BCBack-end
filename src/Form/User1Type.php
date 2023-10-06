@@ -2,26 +2,36 @@
 
 namespace App\Form;
 
-use App\Entity\UserBackOffice;
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserBackOfficeType extends AbstractType
+class User1Type extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username')
+            ->add('email')
             ->add('roles')
             ->add('password')
+            ->add('username')
+            ->add('walletAdress')
+            ->add('avatar')
+            ->add('status')
+            ->add('createdAt')
+            ->add('updatedAt')
+            ->add('decription')
+            ->add('twitterUrl')
+            ->add('instagramUrl')
+            ->add('youtubeUrl')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => UserBackOffice::class,
+            'data_class' => User::class,
         ]);
     }
 }

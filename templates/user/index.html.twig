@@ -6,10 +6,11 @@
 {% block body %}
 	<section class="container">
 
-
 		<h1 class="m-5">User index</h1>
+
+
 		<table class="table">
-			<thead class="table-primary">
+			<thead>
 				<tr>
 					<th>Id</th>
 					<th>Email</th>
@@ -19,6 +20,7 @@
 					<th>UpdatedAt</th>
 					<th>Id des collections</th>
 					<th>actions</th>
+
 				</tr>
 			</thead>
 			<tbody>
@@ -31,19 +33,16 @@
 						<td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
 						<td>{{ user.updatedAt ? user.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
 						<td>{{ user.collec.id }}</td>
-						<td>
-							<a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-							<a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-						</td>
+						<a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
+						<a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
 					</tr>
-				{% else %}
-					<tr>
-						<td colspan="15">no records found</td>
-					</tr>
-				{% endfor %}
+				</td>
 			</tbody>
-		</table>
+		</tr>
+	{% else %}
+		<tr>
+			<td colspan="15">no records found</td>
+		</tr>
+	{% endfor %}
+</tbody></table><a href="{{ path('app_user_new') }}">Create new</a></section>{% endblock %}
 
-		<a href="{{ path('app_user_new') }}">Create new</a>
-	</section>
-{% endblock %}

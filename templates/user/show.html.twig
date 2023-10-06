@@ -2,8 +2,7 @@
 
 {% block title %}User{% endblock %}
 
-{% block body %}<section class="container">
-
+{% block body %}
     <h1>User</h1>
 
     <table class="table">
@@ -71,6 +70,5 @@
 
     <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
 
-{{ include('user/_delete_form.html.twig') }}</section>
-
+    {{ include('user/_delete_form.html.twig') }}
 {% endblock %}
