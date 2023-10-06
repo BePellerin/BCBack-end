@@ -7,8 +7,8 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\User
-                property: email
+                class: App\Entity\UserBackOffice
+                property: username
         # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
@@ -45,6 +45,7 @@ security:
          - { path: ^/drop, roles: ROLE_ADMIN }
          - { path: ^/collecs, roles: ROLE_ADMIN }
          - { path: ^/category, roles: ROLE_ADMIN }
+         - { path: ^/user, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
