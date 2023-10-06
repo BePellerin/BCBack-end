@@ -22,13 +22,43 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
-
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800
                 path: /
                 always_remember_me: true
-
+        login:
+            pattern: ^/api/login
+            stateless: true
+            anonymous: true
+            json_login:
+                check_path: /api/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/api
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        admin:
+            provider: userbackoffice
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                csrf_parameter: _csrf_token
+                default_target_path: app_admin
+            logout:
+                path: app_logout
+                target: app_login
+            custom_authenticator: App\Security\LoginFormAuthenticator
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 86400
+                path: /
+                always_remember_me: true
+            
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -46,6 +76,8 @@ security:
          - { path: ^/collecs, roles: ROLE_ADMIN }
          - { path: ^/category, roles: ROLE_ADMIN }
          - { path: ^/user, roles: ROLE_ADMIN }
+         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
