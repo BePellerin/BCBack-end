@@ -7,11 +7,16 @@ use App\Repository\CollecsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
+// use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
 // use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Constraints as Assert;
 // use ApiPlatform\Core\Annotation\ApiProperty;
+
 #[ORM\Entity(repositoryClass: CollecsRepository::class)]
 #[ApiResource]
+#[Vich\Uploadable]
 class Collecs
 {
     #[ORM\Id]
@@ -25,17 +30,29 @@ class Collecs
     #[ORM\Column(length: 500)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $coverPict = null;
+    // #[ORM\Column(length: 255, nullable: true)]
+    // private ?string $coverPict = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[Vich\UploadableField(mapping: 'coverPict', fileNameProperty: 'imageName', size: 'imageSize')]
+    private ?File $coverPict = null;
+
+    // #[ORM\Column(length: 255, nullable: true)]
+    // #[Assert\Image(
+    //     minWidth: 300,
+    //     maxWidth: 1000,
+    //     minHeight: 300,
+    //     maxHeight: 1000,
+    // )]
+    // private ?string $avatarPict = null;
+
+    #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageName', size: 'imageSize')]
     #[Assert\Image(
-        minWidth: 50,
-        maxWidth: 3000,
-        minHeight: 50,
-        maxHeight: 3000,
+        minWidth: 300,
+        maxWidth: 1000,
+        minHeight: 300,
+        maxHeight: 1000,
     )]
-    private ?string $avatarPict = null;
+    private ?File $avatarPict = null;
 
     #[ORM\Column(length: 255)]
     private ?string $blockchain = null;

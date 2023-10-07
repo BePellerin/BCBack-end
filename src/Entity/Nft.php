@@ -7,11 +7,14 @@ use App\Repository\NftRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiProperty;
+use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: NftRepository::class)]
 #[ApiResource]
+#[Vich\Uploadable]
 class Nft
 {
     #[ORM\Id]
@@ -31,14 +34,23 @@ class Nft
     #[ORM\Column(nullable: true)]
     private ?int $price = null;
 
-    #[ORM\Column(length: 255)]
+    // #[ORM\Column(length: 255)]
+    // #[Assert\Image(
+    //     minWidth: 50,
+    //     maxWidth: 3000,
+    //     minHeight: 50,
+    //     maxHeight: 3000,
+    // )]
+    // private ?string $pict = null;
+
+    #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName', size: 'imageSize')]
     #[Assert\Image(
         minWidth: 50,
         maxWidth: 3000,
         minHeight: 50,
         maxHeight: 3000,
     )]
-    private ?string $pict = null;
+    private ?File $pict = null;
 
     #[ORM\Column(length: 255)]
     private ?string $creator = null;

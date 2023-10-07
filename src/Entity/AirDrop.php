@@ -5,9 +5,15 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\AirDropRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource]
+#[Vich\Uploadable]
 class AirDrop
 {
     #[ORM\Id]
@@ -33,9 +39,10 @@ class AirDrop
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $webSiteUrl = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $pict = null;
-
+    // #[ORM\Column(length: 255)]
+    // private ?string $pict = null;
+    #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName', size: 'imageSize')]
+    private ?File $pict = null;
     public function __toString()
     {
         return $this->name;

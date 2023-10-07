@@ -10,9 +10,12 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource]
+#[Vich\Uploadable]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -38,14 +41,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length:255, nullable: true)]
     private ?string $walletAdress = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    // #[ORM\Column(length: 255, nullable: true)]
+    // #[Assert\Image(
+    //     minWidth: 300,
+    //     maxWidth: 1000,
+    //     minHeight: 300,
+    //     maxHeight: 1000,
+    // )]
+    // private ?string $avatar = null;
+
+    #[Vich\UploadableField(mapping: 'products', fileNameProperty: 'imageName', size: 'imageSize')]
     #[Assert\Image(
         minWidth: 300,
         maxWidth: 1000,
         minHeight: 300,
         maxHeight: 1000,
     )]
-    private ?string $avatar = null;
+    private ?File $avatar = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $status = NULL;
