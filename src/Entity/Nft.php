@@ -28,8 +28,8 @@ class Nft
     #[ORM\Column(length: 300, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private ?\DateTimeImmutable $createdAt;
 
     #[ORM\Column(nullable: true)]
     private ?int $price = null;
@@ -43,7 +43,7 @@ class Nft
     // )]
     // private ?string $pict = null;
 
-    #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName', size: 'imageSize', nullable: false)]
+    #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName', size: 'imageSize')]
     #[Assert\Image(
         minWidth: 50,
         maxWidth: 3000,

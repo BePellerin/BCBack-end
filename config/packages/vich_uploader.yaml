@@ -8,20 +8,20 @@ vich_uploader:
         user:
             uri_prefix: /user/pict
             upload_destination: '%kernel.project_dir%/public/images/users'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
         coverPict:
             uri_prefix: /collection/cover
             upload_destination: '%kernel.project_dir%/public/images/collections/CoverPict'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
         avatarPict:
             uri_prefix: /collection/avatar
             upload_destination: '%kernel.project_dir%/public/images/collections/avatarPict'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
         airDropPict:
-            uri_prefix: /airDrop/pict
+            uri_prefix: /air_drops
             upload_destination: '%kernel.project_dir%/public/images/airDrops'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
         nft:
             uri_prefix: /nft/pict
             upload_destination: '%kernel.project_dir%/public/images/nfts'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer

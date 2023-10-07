@@ -3,46 +3,65 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\AirDropRepository;
+use Attribute;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
 #[Vich\Uploadable]
 class AirDrop
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read', 'write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['read', 'write'])]
     private ?int $nftQuantity = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $category = null;
 
     #[ORM\Column]
+    #[Groups(['read', 'write'])]
     private ?int $launchPrice = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $webSiteUrl = null;
 
     // #[ORM\Column(length: 255)]
     // private ?string $pict = null;
 
-    #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName', size: 'imageSize')]
+    #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
+    #[Groups(['read', 'write'])]
+    // #[Assert\File(
+    //     maxSize: '5m',
+    //     extensions: ['jpg'],
+    //     extensionsMessage: 'Please upload a .jpg',
+    // )]
     private ?File $pict = null;
 
     public function __toString()

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CollecsRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,7 +35,7 @@ class Collecs
     // #[ORM\Column(length: 255, nullable: true)]
     // private ?string $coverPict = null;
 
-    #[Vich\UploadableField(mapping: 'coverPict', fileNameProperty: 'imageName', size:'imageSize', nullable: true)]
+    #[Vich\UploadableField(mapping: 'coverPict', fileNameProperty: 'imageName', size:'imageSize')]
     private ?File $coverPict = null;
 
     // #[ORM\Column(length: 255, nullable: true)]
@@ -45,7 +47,7 @@ class Collecs
     // )]
     // private ?string $avatarPict = null;
 
-    #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageName', size: 'imageSize', nullable: false)]
+    #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageName', size: 'imageSize')]
     #[Assert\Image(
         minWidth: 200,
         maxWidth: 1000,
@@ -68,8 +70,10 @@ class Collecs
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    // #[Assert\DateTime(format: DateTime::ATOM, message: "Enable time is not a valid datetime.")]
+    #[Assert\DateTime]
+    private ?\DateTimeImmutable $createdAt;
 
     #[ORM\ManyToOne(inversedBy: 'collecs')]
     #[ORM\JoinColumn(nullable: false)]
@@ -98,8 +102,12 @@ class Collecs
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
+        // $this->createdAt = new \DateTimeImmutable();
         return $this;
+        
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            
     }
 
     public function getDescription(): ?string
@@ -128,11 +136,7 @@ class Collecs
     {
         $this->avatarPict = $avatarPict;
 
-        if (null !== $avatarPict) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->createdAt = new \DateTimeImmutable();
-        }
+        
     }
 
     public function getAvatarPict(): ?File

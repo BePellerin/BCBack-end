@@ -1,0 +1,6 @@
+resources:
+    App\Entity\AirDrop:
+        normalizationContext:
+            groups: ['read']
+        denormalizationContext:
+            groups: ['write']
