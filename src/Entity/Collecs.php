@@ -33,7 +33,7 @@ class Collecs
     // #[ORM\Column(length: 255, nullable: true)]
     // private ?string $coverPict = null;
 
-    #[Vich\UploadableField(mapping: 'coverPict', fileNameProperty: 'imageName', size: 'imageSize')]
+    #[Vich\UploadableField(mapping: 'coverPict', fileNameProperty: 'imageName', size:'imageSize', nullable: true)]
     private ?File $coverPict = null;
 
     // #[ORM\Column(length: 255, nullable: true)]
@@ -45,11 +45,11 @@ class Collecs
     // )]
     // private ?string $avatarPict = null;
 
-    #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageName', size: 'imageSize')]
+    #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageName', size: 'imageSize', nullable: false)]
     #[Assert\Image(
-        minWidth: 300,
+        minWidth: 200,
         maxWidth: 1000,
-        minHeight: 300,
+        minHeight: 200,
         maxHeight: 1000,
     )]
     private ?File $avatarPict = null;
@@ -114,28 +114,30 @@ class Collecs
         return $this;
     }
 
-    public function getCoverPict(): ?string
+    public function setCoverPict(?File $coverPict = null): void
+    {
+        $this->coverPict = $coverPict;
+    }
+
+    public function getCoverPict(): ?File
     {
         return $this->coverPict;
     }
 
-    public function setCoverPict(?string $coverPict): static
-    {
-        $this->coverPict = $coverPict;
-
-        return $this;
-    }
-
-    public function getAvatarPict(): ?string
-    {
-        return $this->avatarPict;
-    }
-
-    public function setAvatarPict(?string $avatarPict): static
+    public function setAvatarPict(?File $avatarPict = null): void
     {
         $this->avatarPict = $avatarPict;
 
-        return $this;
+        if (null !== $avatarPict) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getAvatarPict(): ?File
+    {
+        return $this->avatarPict;
     }
 
     public function getBlockchain(): ?string

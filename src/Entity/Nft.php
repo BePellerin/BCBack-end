@@ -29,7 +29,7 @@ class Nft
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $ceatedAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $price = null;
@@ -43,7 +43,7 @@ class Nft
     // )]
     // private ?string $pict = null;
 
-    #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName', size: 'imageSize')]
+    #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName', size: 'imageSize', nullable: false)]
     #[Assert\Image(
         minWidth: 50,
         maxWidth: 3000,
@@ -103,14 +103,14 @@ class Nft
         return $this;
     }
 
-    public function getCeatedAt(): ?\DateTimeImmutable
+    public function getcreatedAt(): ?\DateTimeImmutable
     {
-        return $this->ceatedAt;
+        return $this->createdAt;
     }
 
-    public function setCeatedAt(\DateTimeImmutable $ceatedAt): static
+    public function setcreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->ceatedAt = $ceatedAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -127,18 +127,20 @@ class Nft
         return $this;
     }
 
-    public function getPict(): ?string
+    public function getPict(): ?File
     {
         return $this->pict;
     }
-
-    public function setPict(string $pict): static
+    public function setPict(?File $pict = null): void
     {
         $this->pict = $pict;
 
-        return $this;
+        if (null !== $pict) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->createdAt = new \DateTimeImmutable();
+        }
     }
-
     public function getCreator(): ?string
     {
         return $this->creator;

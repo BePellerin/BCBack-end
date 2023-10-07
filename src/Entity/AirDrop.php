@@ -41,8 +41,10 @@ class AirDrop
 
     // #[ORM\Column(length: 255)]
     // private ?string $pict = null;
+
     #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName', size: 'imageSize')]
     private ?File $pict = null;
+
     public function __toString()
     {
         return $this->name;
@@ -123,16 +125,19 @@ class AirDrop
 
         return $this;
     }
-
-    public function getPict(): ?string
-    {
-        return $this->pict;
-    }
-
-    public function setPict(string $pict): static
+    public function setPict(?File $pict = null): void
     {
         $this->pict = $pict;
 
-        return $this;
+        // if (null !== $pict) {
+        //     // It is required that at least one field changes if you are using doctrine
+        //     // otherwise the event listeners won't be called and the file is lost
+        //     $this->updatedAt = new \DateTimeImmutable();
+        // }
+    }
+
+    public function getPict(): ?File
+    {
+        return $this->pict;
     }
 }

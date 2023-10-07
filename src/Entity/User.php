@@ -50,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     // )]
     // private ?string $avatar = null;
 
-    #[Vich\UploadableField(mapping: 'products', fileNameProperty: 'imageName', size: 'imageSize')]
+    #[Vich\UploadableField(mapping: 'user', fileNameProperty: 'imageName', size: 'imageSize')]
     #[Assert\Image(
         minWidth: 300,
         maxWidth: 1000,
@@ -188,19 +188,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    public function getAvatar(): ?string
+    public function getAvatar(): ?File
     {
         return $this->avatar;
     }
-
-    public function setAvatar(?string $avatar): static
+    public function setAvatar(?File $avatar = null): void
     {
         $this->avatar = $avatar;
 
-        return $this;
+        if (null !== $avatar) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
-
     public function isStatus(): ?bool
     {
         return $this->status;
