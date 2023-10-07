@@ -33,6 +33,9 @@ class AirDrop
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $webSiteUrl = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $pict = null;
+
     public function __toString()
     {
         return $this->name;
@@ -110,6 +113,18 @@ class AirDrop
     public function setWebSiteUrl(?string $webSiteUrl): static
     {
         $this->webSiteUrl = $webSiteUrl;
+
+        return $this;
+    }
+
+    public function getPict(): ?string
+    {
+        return $this->pict;
+    }
+
+    public function setPict(string $pict): static
+    {
+        $this->pict = $pict;
 
         return $this;
     }

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/category')]
-#[IsGranted("ROLE_ADMIN")]
+#[IsGranted("ROLE_ADMIN", "ROLE_USER")]
 class CategoryController extends AbstractController
 {
     #[Route('/', name: 'app_category_index', methods: ['GET'])]

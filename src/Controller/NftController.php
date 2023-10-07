@@ -13,10 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/nft')]
-#[IsGranted("ROLE_ADMIN")]
 class NftController extends AbstractController
 {
     #[Route('/', name: 'app_nft_index', methods: ['GET'])]
+    #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function index(NftRepository $nftRepository): Response
     {
         return $this->render('nft/index.html.twig', [
@@ -25,6 +25,7 @@ class NftController extends AbstractController
     }
 
     #[Route('/new', name: 'app_nft_new', methods: ['GET', 'POST'])]
+    #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $nft = new Nft();
@@ -45,6 +46,7 @@ class NftController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_nft_show', methods: ['GET'])]
+    #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function show(Nft $nft): Response
     {
         return $this->render('nft/show.html.twig', [
@@ -53,6 +55,7 @@ class NftController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_nft_edit', methods: ['GET', 'POST'])]
+    #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function edit(Request $request, Nft $nft, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(NftType::class, $nft);
@@ -71,6 +74,7 @@ class NftController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_nft_delete', methods: ['POST'])]
+    #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function delete(Request $request, Nft $nft, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$nft->getId(), $request->request->get('_token'))) {

@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 // use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-// use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints as Assert;
 // use ApiPlatform\Core\Annotation\ApiProperty;
 #[ORM\Entity(repositoryClass: CollecsRepository::class)]
 #[ApiResource]
@@ -29,6 +29,12 @@ class Collecs
     private ?string $coverPict = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Image(
+        minWidth: 50,
+        maxWidth: 3000,
+        minHeight: 50,
+        maxHeight: 3000,
+    )]
     private ?string $avatarPict = null;
 
     #[ORM\Column(length: 255)]

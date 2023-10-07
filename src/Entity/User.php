@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource]
@@ -38,10 +39,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $walletAdress = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Image(
+        minWidth: 300,
+        maxWidth: 1000,
+        minHeight: 300,
+        maxHeight: 1000,
+    )]
     private ?string $avatar = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $status = null;
+    private ?bool $status = NULL;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;

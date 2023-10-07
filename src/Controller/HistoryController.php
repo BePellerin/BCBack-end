@@ -13,10 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/history')]
-#[IsGranted("ROLE_ADMIN")]
 class HistoryController extends AbstractController
 {
     #[Route('/', name: 'app_history_index', methods: ['GET'])]
+    #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function index(HistoryRepository $historyRepository): Response
     {
         return $this->render('history/index.html.twig', [
@@ -25,6 +25,7 @@ class HistoryController extends AbstractController
     }
 
     #[Route('/new', name: 'app_history_new', methods: ['GET', 'POST'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $history = new History();
@@ -45,6 +46,7 @@ class HistoryController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_history_show', methods: ['GET'])]
+    #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function show(History $history): Response
     {
         return $this->render('history/show.html.twig', [
@@ -53,6 +55,7 @@ class HistoryController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_history_edit', methods: ['GET', 'POST'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function edit(Request $request, History $history, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(HistoryType::class, $history);
@@ -71,6 +74,7 @@ class HistoryController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_history_delete', methods: ['POST'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function delete(Request $request, History $history, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$history->getId(), $request->request->get('_token'))) {

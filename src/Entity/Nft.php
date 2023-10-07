@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: NftRepository::class)]
 #[ApiResource]
@@ -31,6 +32,12 @@ class Nft
     private ?int $price = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Image(
+        minWidth: 50,
+        maxWidth: 3000,
+        minHeight: 50,
+        maxHeight: 3000,
+    )]
     private ?string $pict = null;
 
     #[ORM\Column(length: 255)]
