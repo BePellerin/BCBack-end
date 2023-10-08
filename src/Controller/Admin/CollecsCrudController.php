@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Collecs;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
@@ -26,7 +27,7 @@ class CollecsCrudController extends AbstractCrudController
             TextField::new('title'),
             // TextEditorField::new('description'),
             TextField::new('user'),
-            ArrayField::new('nfts'),
+            CollectionField::new('nft'),
             TextField::new('category'),
             // DateTimeField::new('createdAt'),
         ];

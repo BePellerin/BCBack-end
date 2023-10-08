@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -25,6 +26,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class UserCrudController extends AbstractCrudController
 {
+    use Trait\adminTrait;
+    
     public function __construct(
         public UserPasswordHasherInterface $userPasswordHasher
     ) {
@@ -49,6 +52,8 @@ class UserCrudController extends AbstractCrudController
             ArrayField::new('roles'),
             Field::new('username','Pseudo'),
             DateTimeField::new('createdAt','Inscription'),
+            CollectionField::new('nfts'),
+            CollectionField::new('collecs'),
         ];
         $password = TextField::new('password')
             ->setFormType(RepeatedType::class)

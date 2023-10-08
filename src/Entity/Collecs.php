@@ -73,7 +73,7 @@ class Collecs
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     // #[Assert\DateTime(format: DateTime::ATOM, message: "Enable time is not a valid datetime.")]
     #[Assert\DateTime]
-    private ?\DateTimeImmutable $createdAt;
+    private ?\DateTime $createdAt;
 
     #[ORM\ManyToOne(inversedBy: 'collecs')]
     #[ORM\JoinColumn(nullable: false)]

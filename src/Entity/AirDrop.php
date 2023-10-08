@@ -13,11 +13,50 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model;
+use App\Controller\Admin\AirDropCrudController;
+use App\Controller\CreateMediaObjectAction;
 
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']],
+    normalizationContext: ['groups' => ['airDropPict:read']],
+    types: ['https://schema.org/MediaObject'],
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            controller: AirDropCrudController::class,
+            deserialize: false,
+            validationContext: ['groups' => ['Default', 'airDropPict_create']],
+            openapi: new Model\Operation(
+                requestBody: new Model\RequestBody(
+                    content: new \ArrayObject([
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'file' => [
+                                        'type' => 'string',
+                                        'format' => 'binary'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ])
+                )
+            )
+        ),
+        new Put(),
+        new Delete(),
+        new Patch(),
+    ]
 )]
 #[Vich\Uploadable]
 class AirDrop
@@ -25,44 +64,47 @@ class AirDrop
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read', 'write'])]
+    // #[Groups(['read', 'write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    // #[Groups(['read', 'write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    // #[Groups(['read', 'write'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['read', 'write'])]
+    // #[Groups(['read', 'write'])]
     private ?int $nftQuantity = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    // #[Groups(['read', 'write'])]
     private ?string $category = null;
 
     #[ORM\Column]
-    #[Groups(['read', 'write'])]
+    // #[Groups(['read', 'write'])]
     private ?int $launchPrice = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read', 'write'])]
+    // #[Groups(['read', 'write'])]
     private ?string $webSiteUrl = null;
 
     // #[ORM\Column(length: 255)]
     // private ?string $pict = null;
 
-    #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
-    #[Groups(['read', 'write'])]
+    #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'filePath')]
+    #[Assert\NotNull(groups: ['airDropPict_create'])]
     // #[Assert\File(
     //     maxSize: '5m',
     //     extensions: ['jpg'],
     //     extensionsMessage: 'Please upload a .jpg',
     // )]
     private ?File $pict = null;
+
+    #[ORM\Column(nullable: true)]
+    public ?string $filePath = null;
 
     public function __toString()
     {
@@ -158,5 +200,17 @@ class AirDrop
     public function getPict(): ?File
     {
         return $this->pict;
+    }
+
+    public function getFilePath(): ?string
+    {
+        return $this->filePath;
+    }
+
+    public function setFilePath(string $filePath): static
+    {
+        $this->filePath = $filePath;
+
+        return $this;
     }
 }
