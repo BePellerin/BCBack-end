@@ -61,11 +61,11 @@ class Nft
 
     #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
-    // #[Assert\File(
-    //     maxSize: '5m',
-    //     extensions: ['jpg'],
-    //     extensionsMessage: 'Please upload a .jpg',
-    // )]
+    #[Assert\File(
+        maxSize: '5m',
+        extensions: ['jpg', 'png', 'mp3'],
+        extensionsMessage: 'Merci de télécharger un fichier jpg, png ou mp3 de moins de 5 MB ',
+    )]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]

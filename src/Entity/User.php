@@ -101,11 +101,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Vich\UploadableField(mapping: 'user', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
-    // #[Assert\File(
-    //     maxSize: '5m',
-    //     extensions: ['jpg'],
-    //     extensionsMessage: 'Please upload a .jpg',
-    // )]
+    #[Assert\File(
+        maxSize: '1m',
+        extensions: ['jpg', 'png'],
+        extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 1 MB ',
+    )]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]

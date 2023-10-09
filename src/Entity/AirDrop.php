@@ -34,7 +34,11 @@ use App\Controller\CreateMediaObjectAction;
 #[GetCollection()]
 
 #[Post(
-    denormalizationContext: ['groups' => ['write']],
+    denormalizationContext: [
+        'groups' => ['write'],
+        'disable_type_enforcement' => true,
+        'collect_denormalization_errors' => true
+    ],
     inputFormats: ['multipart' => ['multipart/form-data']]
 )]
 #[Put()]
@@ -55,8 +59,8 @@ class AirDrop
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(
-        min:10,
-        max:500,
+        min: 10,
+        max: 500,
         minMessage: 'Le minimum est de {{limit}} caractères',
         maxMessage: 'Le maximum est de {{limit}} caractères'
     )]
@@ -65,42 +69,35 @@ class AirDrop
 
     #[ORM\Column]
     #[Groups(['read', 'write'])]
-    private ?int $nftQuantity = 0;
+    private ?int $nftQuantity = null;
 
     #[ORM\Column(length: 255)]
-     #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'])]
     private ?string $category = null;
 
     #[ORM\Column]
     #[Groups(['read', 'write'])]
-    private ?int $launchPrice = 0;
+    private ?int $launchPrice = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
     private ?string $webSiteUrl = null;
 
-    // #[ORM\Column(length: 255)]
-    // private ?string $pict = null;
-
-    // #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    // #[Groups(['media_object:read'])]
-    // public ?string $contentUrl = null;
-
     #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
-    // #[Assert\File(
-    //     maxSize: '5m',
-    //     extensions: ['jpg'],
-    //     extensionsMessage: 'Please upload a .jpg',
-    // )]
+    #[Assert\File(
+        maxSize: '3mb',
+        extensions: ['jpg','png'],
+        extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 3 MB',
+    )]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?string $imageName = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __toString()
@@ -108,7 +105,7 @@ class AirDrop
         return $this->name;
         // return $this->launchPrice;
     }
-    
+
     public function getId(): ?int
     {
         return $this->id;
@@ -143,8 +140,11 @@ class AirDrop
         return $this->nftQuantity;
     }
 
-    public function setNftQuantity(int $nftQuantity): self
+    public function setNftQuantity(int $nftQuantity): static
     {
+        // if (is_string($nftQuantity)) {
+        //     $nftQuantity = intval($nftQuantity);
+        // }
         $this->nftQuantity = $nftQuantity;
 
         return $this;
@@ -167,8 +167,11 @@ class AirDrop
         return $this->launchPrice;
     }
 
-    public function setLaunchPrice(int $launchPrice): self
+    public function setLaunchPrice(int $launchPrice): static
     {
+        // if (is_string($launchPrice)) {
+        //     $launchPrice = intval($launchPrice);
+        // }
         $this->launchPrice = $launchPrice;
 
         return $this;

@@ -87,11 +87,11 @@ class Collecs
 
     #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageNameAvatar')]
     #[Groups(['read', 'write'])]
-    // #[Assert\File(
-    //     maxSize: '5m',
-    //     extensions: ['jpg'],
-    //     extensionsMessage: 'Please upload a .jpg',
-    // )]
+    #[Assert\File(
+        maxSize: '5m',
+        extensions: ['jpg', 'png'],
+        extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 5 MB',
+    )]
     private ?File $avatarPict = null;
 
     #[ORM\Column(nullable: true)]
