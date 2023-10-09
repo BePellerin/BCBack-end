@@ -24,92 +24,91 @@ use ApiPlatform\OpenApi\Model;
 use App\Controller\Admin\AirDropCrudController;
 use App\Controller\CreateMediaObjectAction;
 
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['airDropPict:read']],
-    types: ['https://schema.org/MediaObject'],
-    operations: [
-        new Get(),
-        new GetCollection(),
-        new Post(
-            controller: AirDropCrudController::class,
-            deserialize: false,
-            validationContext: ['groups' => ['Default', 'airDropPict_create']],
-            openapi: new Model\Operation(
-                requestBody: new Model\RequestBody(
-                    content: new \ArrayObject([
-                        'multipart/form-data' => [
-                            'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'file' => [
-                                        'type' => 'string',
-                                        'format' => 'binary'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ])
-                )
-            )
-        ),
-        new Put(),
-        new Delete(),
-        new Patch(),
-    ]
+    normalizationContext: ['groups' => ['read']]
 )]
-#[Vich\Uploadable]
+
+#[Get()]
+#[GetCollection()]
+
+#[Post(
+    denormalizationContext: ['groups' => ['write']],
+    inputFormats: ['multipart' => ['multipart/form-data']]
+)]
+#[Put()]
+#[Delete()]
+#[Patch()]
 class AirDrop
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    // #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    // #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    // #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min:10,
+        max:500,
+        minMessage: 'Le minimum est de {{limit}} caractères',
+        maxMessage: 'Le maximum est de {{limit}} caractères'
+    )]
+    #[Groups(['read', 'write'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    // #[Groups(['read', 'write'])]
-    private ?int $nftQuantity = null;
+    #[Groups(['read', 'write'])]
+    private ?int $nftQuantity = 0;
 
     #[ORM\Column(length: 255)]
-    // #[Groups(['read', 'write'])]
+     #[Groups(['read', 'write'])]
     private ?string $category = null;
 
     #[ORM\Column]
-    // #[Groups(['read', 'write'])]
-    private ?int $launchPrice = null;
+    #[Groups(['read', 'write'])]
+    private ?int $launchPrice = 0;
 
     #[ORM\Column(length: 255, nullable: true)]
-    // #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'])]
     private ?string $webSiteUrl = null;
 
     // #[ORM\Column(length: 255)]
     // private ?string $pict = null;
 
-    #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'filePath')]
-    #[Assert\NotNull(groups: ['airDropPict_create'])]
+    // #[ApiProperty(types: ['https://schema.org/contentUrl'])]
+    // #[Groups(['media_object:read'])]
+    // public ?string $contentUrl = null;
+
+    #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
+    #[Groups(['read', 'write'])]
     // #[Assert\File(
     //     maxSize: '5m',
     //     extensions: ['jpg'],
     //     extensionsMessage: 'Please upload a .jpg',
     // )]
-    private ?File $pict = null;
+    private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
-    public ?string $filePath = null;
+    #[Groups(['read', 'write'])]
+    private ?string $imageName = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function __toString()
     {
         return $this->name;
+        // return $this->launchPrice;
     }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -144,7 +143,7 @@ class AirDrop
         return $this->nftQuantity;
     }
 
-    public function setNftQuantity(int $nftQuantity): static
+    public function setNftQuantity(int $nftQuantity): self
     {
         $this->nftQuantity = $nftQuantity;
 
@@ -168,7 +167,7 @@ class AirDrop
         return $this->launchPrice;
     }
 
-    public function setLaunchPrice(int $launchPrice): static
+    public function setLaunchPrice(int $launchPrice): self
     {
         $this->launchPrice = $launchPrice;
 
@@ -186,31 +185,40 @@ class AirDrop
 
         return $this;
     }
-    public function setPict(?File $pict = null): void
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        $this->pict = $pict;
-
-        // if (null !== $pict) {
-        //     // It is required that at least one field changes if you are using doctrine
-        //     // otherwise the event listeners won't be called and the file is lost
-        //     $this->updatedAt = new \DateTimeImmutable();
-        // }
+        return $this->updatedAt;
     }
 
-    public function getPict(): ?File
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
-        return $this->pict;
-    }
-
-    public function getFilePath(): ?string
-    {
-        return $this->filePath;
-    }
-
-    public function setFilePath(string $filePath): static
-    {
-        $this->filePath = $filePath;
+        $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
     }
 }

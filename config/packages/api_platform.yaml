@@ -8,11 +8,11 @@ api_platform:
             vary: ['Content-Type', 'Authorization', 'Origin']
         extra_properties:
             standard_put: true
-    formats:
-        json: ['application/json']
-        jsonld: ['application/json+ld']
-        html: ['text/html']
-        multipart: ['multipart/form-data']
+    # formats:
+    #     json: ['application/json']
+    #     jsonld: ['application/json+ld']
+    #     html: ['text/html']
+    #     multipart: ['multipart/form-data']
     # resources:
     #     App\Entity\AirDrop:
     #         normalizationContext:

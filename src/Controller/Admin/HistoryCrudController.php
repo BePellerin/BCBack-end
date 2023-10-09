@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class HistoryCrudController extends AbstractCrudController
 {
+    use Trait\adminTrait;
     public static function getEntityFqcn(): string
     {
         return History::class;

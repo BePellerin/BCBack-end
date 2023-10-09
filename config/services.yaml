@@ -4,7 +4,11 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    # users: /images/users
+    # collCoverPict: /images/collections/coverPict
+    # collAvatarPict: /images/collections/avatarPict
+    # airDrops: /images/airDrops
+    # nfts: /images/nfts
 services:
     # default configuration for services in *this* file
     _defaults:

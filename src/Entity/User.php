@@ -9,79 +9,111 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource]
 #[Vich\Uploadable]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']]
+)]
+
+#[Get()]
+#[GetCollection()]
+
+#[Post(
+    denormalizationContext: ['groups' => ['write']],
+    inputFormats: ['multipart' => ['multipart/form-data']]
+)]
+#[Put()]
+#[Delete()]
+#[Patch()]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+      #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+      #[Groups(['read', 'write'])]
     private ?string $email = null;
 
     #[ORM\Column]
+      #[Groups(['read', 'write'])]
     private array $roles = ["ROLE_ADMIN","ROLE_USER"];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+      #[Groups(['read', 'write'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+      #[Groups(['read', 'write'])]
     private ?string $username = null;
 
     #[ORM\Column(length:255, nullable: true)]
+      #[Groups(['read', 'write'])]
     private ?string $walletAdress = null;
 
-    // #[ORM\Column(length: 255, nullable: true)]
-    // #[Assert\Image(
-    //     minWidth: 300,
-    //     maxWidth: 1000,
-    //     minHeight: 300,
-    //     maxHeight: 1000,
-    // )]
-    // private ?string $avatar = null;
-
-    #[Vich\UploadableField(mapping: 'user', fileNameProperty: 'imageName', size: 'imageSize')]
-    #[Assert\Image(
-        minWidth: 300,
-        maxWidth: 1000,
-        minHeight: 300,
-        maxHeight: 1000,
-    )]
-    private ?File $avatar = null;
-
     #[ORM\Column(nullable: true)]
+      #[Groups(['read', 'write'])]
     private ?bool $status = NULL;
 
-    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTimeImmutable $createdAt;
+    #[ORM\Column(nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 500, nullable: true)]
+      #[Groups(['read', 'write'])]
     private ?string $decription = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+      #[Groups(['read', 'write'])]
     private ?string $twitterUrl = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $instagramUrl = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $youtubeUrl = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Collecs::class, orphanRemoval: true)]
+    #[Groups(['read', 'write'])]
     private Collection $collecs;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Nft::class, orphanRemoval: true)]
+    #[Groups(['read', 'write'])]
     private Collection $nfts;
+
+    #[Vich\UploadableField(mapping: 'user', fileNameProperty: 'imageName')]
+    #[Groups(['read', 'write'])]
+    // #[Assert\File(
+    //     maxSize: '5m',
+    //     extensions: ['jpg'],
+    //     extensionsMessage: 'Please upload a .jpg',
+    // )]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $imageName = null;
+
+    
+
     public function __toString()
     {
         return $this->email;
@@ -185,20 +217,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    public function getAvatar(): ?File
-    {
-        return $this->avatar;
-    }
-    public function setAvatar(?File $avatar = null): void
-    {
-        $this->avatar = $avatar;
+    // public function getAvatar(): ?File
+    // {
+    //     return $this->avatar;
+    // }
+    // public function setAvatar(?File $avatar = null): void
+    // {
+    //     $this->avatar = $avatar;
 
-        if (null !== $avatar) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->createdAt = new \DateTimeImmutable();
-        }
-    }
+    //     if (null !== $avatar) {
+    //         // It is required that at least one field changes if you are using doctrine
+    //         // otherwise the event listeners won't be called and the file is lost
+    //         $this->createdAt = new \DateTimeImmutable();
+    //     }
+    // }
     public function isStatus(): ?bool
     {
         return $this->status;
@@ -211,17 +243,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
+    // public function getCreatedAt(): ?\DateTimeImmutable
+    // {
+    //     return $this->createdAt;
+    // }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
+    // public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    // {
+    //     $this->createdAt = $createdAt;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getDecription(): ?string
     {
@@ -329,5 +361,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
     }
 }

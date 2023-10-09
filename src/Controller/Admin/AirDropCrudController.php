@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+
+#[AsController]
 class AirDropCrudController extends AbstractCrudController
 {
     use Trait\adminTrait;
@@ -31,16 +34,16 @@ class AirDropCrudController extends AbstractCrudController
             IdField::new('id'),
             TextField::new('name'),
             TextField::new('description'),
-            TextField::new('nftQuantity'),
+            NumberField::new('nftQuantity'),
             TextField::new('category'),
-            TextField::new('launchPrice'),
-            ImageField::new('pict'),
+            NumberField::new('launchPrice'),
+            // ImageField::new('pict'),
         ];
     }
-    
+
     // public function __invoke(Request $request): AirDrop
     // {
-    //     $uploadedFile = $request->files->get('pict');
+    //     $uploadedFile = $request->files->get('file');
     //     if (!$uploadedFile) {
     //         throw new BadRequestHttpException('"file" is required');
     //     }

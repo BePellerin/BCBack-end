@@ -7,14 +7,35 @@ use App\Repository\NftRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass: NftRepository::class)]
-#[ApiResource]
 #[Vich\Uploadable]
+#[ORM\Entity(repositoryClass: NftRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']]
+)]
+
+#[Get()]
+#[GetCollection()]
+
+#[Post(
+    denormalizationContext: ['groups' => ['write']],
+    inputFormats: ['multipart' => ['multipart/form-data']]
+)]
+
+#[Put()]
+#[Delete()]
+#[Patch()]
 class Nft
 {
     #[ORM\Id]
@@ -23,48 +44,52 @@ class Nft
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 300, nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTimeImmutable $createdAt;
+    #[ORM\Column(nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?int $price = null;
 
-    // #[ORM\Column(length: 255)]
-    // #[Assert\Image(
-    //     minWidth: 50,
-    //     maxWidth: 3000,
-    //     minHeight: 50,
-    //     maxHeight: 3000,
+    #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName')]
+    #[Groups(['read', 'write'])]
+    // #[Assert\File(
+    //     maxSize: '5m',
+    //     extensions: ['jpg'],
+    //     extensionsMessage: 'Please upload a .jpg',
     // )]
-    // private ?string $pict = null;
+    private ?File $imageFile = null;
 
-    #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName', size: 'imageSize')]
-    #[Assert\Image(
-        minWidth: 50,
-        maxWidth: 3000,
-        minHeight: 50,
-        maxHeight: 3000,
-    )]
-    private ?File $pict = null;
+    #[ORM\Column(nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $imageName = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $creator = null;
 
     #[ORM\ManyToOne(targetEntity : Collecs::class, inversedBy: 'nfts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read', 'write'])]
     private ?Collecs $collec = null;
 
     #[ORM\OneToMany(mappedBy: 'nft', targetEntity: History::class, orphanRemoval: true)]
+    #[Groups(['read', 'write'])]
     private Collection $histories;
 
     #[ORM\ManyToOne(inversedBy: 'nfts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read', 'write'])]
     private ?User $user = null;
+
     public function __toString()
     {
         return $this->title;
@@ -103,18 +128,6 @@ class Nft
         return $this;
     }
 
-    public function getcreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setcreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
     public function getPrice(): ?int
     {
         return $this->price;
@@ -127,20 +140,6 @@ class Nft
         return $this;
     }
 
-    public function getPict(): ?File
-    {
-        return $this->pict;
-    }
-    public function setPict(?File $pict = null): void
-    {
-        $this->pict = $pict;
-
-        if (null !== $pict) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->createdAt = new \DateTimeImmutable();
-        }
-    }
     public function getCreator(): ?string
     {
         return $this->creator;
@@ -205,5 +204,41 @@ class Nft
         $this->user = $user;
 
         return $this;
+    }
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
     }
 }

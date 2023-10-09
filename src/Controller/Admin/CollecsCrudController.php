@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CollecsCrudController extends AbstractCrudController
 {
+    use Trait\adminTrait;
     public static function getEntityFqcn(): string
     {
         return Collecs::class;
@@ -23,11 +24,11 @@ class CollecsCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            // IdField::new('id'),
+            IdField::new('id'),
             TextField::new('title'),
-            // TextEditorField::new('description'),
+            TextEditorField::new('description'),
             TextField::new('user'),
-            CollectionField::new('nft'),
+            CollectionField::new('nfts'),
             TextField::new('category'),
             // DateTimeField::new('createdAt'),
         ];

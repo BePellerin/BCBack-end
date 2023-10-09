@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -51,7 +52,8 @@ class UserCrudController extends AbstractCrudController
             Field::new('status'),
             ArrayField::new('roles'),
             Field::new('username','Pseudo'),
-            DateTimeField::new('createdAt','Inscription'),
+            Field::new('walletAdress','Wallet'),
+            // DateTimeField::new('UpdatedAt','Inscription'),   
             CollectionField::new('nfts'),
             CollectionField::new('collecs'),
         ];
