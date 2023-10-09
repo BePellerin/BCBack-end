@@ -61,8 +61,8 @@ class AirDrop
     #[Assert\Length(
         min: 10,
         max: 500,
-        minMessage: 'Le minimum est de {{limit}} caractères',
-        maxMessage: 'Le maximum est de {{limit}} caractères'
+        minMessage: 'Le minimum est de 10 caractères',
+        maxMessage: 'Le maximum est de 500 caractères'
     )]
     #[Groups(['read', 'write'])]
     private ?string $description = null;
@@ -86,9 +86,15 @@ class AirDrop
     #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
     #[Assert\File(
-        maxSize: '3mb',
+        maxSize: '3000k',
         extensions: ['jpg','png'],
         extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 3 MB',
+    )]
+    #[Assert\Image(
+        minWidth: 50,
+        maxWidth: 5000,
+        minHeight: 50,
+        maxHeight: 5000,
     )]
     private ?File $imageFile = null;
 
