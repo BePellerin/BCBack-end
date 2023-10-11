@@ -148,7 +148,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read', 'write'])]
     private ?string $imageName = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     #[Groups(['read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -160,7 +160,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->collecs = new ArrayCollection();
         $this->nfts = new ArrayCollection();
-        $this->createdAt = new DateTime('now');
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

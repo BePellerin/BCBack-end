@@ -16,12 +16,15 @@ use ApiPlatform\Metadata\Put;
 use DateTime;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: NftRepository::class)]
+// #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
     paginationItemsPerPage: 25,
@@ -47,7 +50,7 @@ class Nft
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(
@@ -58,12 +61,12 @@ class Nft
     )]
     private ?string $title = null;
 
-    #[ORM\Column(length: 300, nullable: true)]
+    #[ORM\Column(length: 750, nullable: true)]
     #[Groups(['read', 'write'])]
     #[Assert\Length(
-        min: 200,
+        min: 10,
         max: 750,
-        minMessage: 'Le minimum est de 200 caractères',
+        minMessage: 'Le minimum est de 10 caractères',
         maxMessage: 'Le maximum est de 750 caractères'
     )]
     private ?string $description = null;
@@ -100,11 +103,11 @@ class Nft
     #[Groups(['read', 'write'])]
     private ?string $imageName = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
     private ?string $creator = null;
 
-    #[ORM\ManyToOne(targetEntity : Collecs::class, inversedBy: 'nfts')]
+    #[ORM\ManyToOne(targetEntity: Collecs::class, inversedBy: 'nfts')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['read', 'write'])]
     private ?Collecs $collec = null;
@@ -118,18 +121,25 @@ class Nft
     #[Groups(['read', 'write'])]
     private ?User $user = null;
 
-    #[ORM\Column]
-    #[Groups(['read'])]
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    // private $tokenStorage;
 
     public function __toString()
     {
         return $this->title;
+        // return $this->createdAt;
     }
     public function __construct()
     {
         $this->histories = new ArrayCollection();
-        $this->createdAt = new DateTime('now');
+        $this->createdAt = new \DateTimeImmutable();
+        // $user = $this->getUser();
+        // $creator = $this->getUser();
+        // $this->creator = new User();
+        // $this->tokenStorage = $tokenStorage;
     }
 
     public function getId(): ?int
@@ -286,4 +296,17 @@ class Nft
 
         return $this;
     }
+
+
+    // /**
+    //  * @ORM\PrePersist
+    //  */
+    // public function prePersist()
+    // {
+    //     $user = $this->tokenStorage->getToken()->getUser();
+
+    //     if ($user instanceof UserInterface) {
+    //         $this->setCreator($user->getUserIdentifier());
+    //     }
+    // }
 }

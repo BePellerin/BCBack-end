@@ -50,7 +50,7 @@ class Collecs
     #[Groups(['read', 'write'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(
@@ -61,7 +61,7 @@ class Collecs
     )]
     private ?string $title = null;
 
-    #[ORM\Column(length: 500)]
+    #[ORM\Column(length: 750)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(

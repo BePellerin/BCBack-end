@@ -59,7 +59,7 @@ class AirDrop
     #[Groups(['read', 'write'])]
     private ?bool $status = false;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(
@@ -70,12 +70,12 @@ class AirDrop
     )]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 750)]
     #[Assert\NotBlank]
     #[Assert\Length(
-        min: 200,
+        min: 10,
         max: 750,
-        minMessage: 'Le minimum est de 200 caractères',
+        minMessage: 'Le minimum est de 10 caractères',
         maxMessage: 'Le maximum est de 750 caractères'
     )]
     #[Groups(['read', 'write'])]
@@ -128,9 +128,17 @@ class AirDrop
     #[Groups(['read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /**
+     * @var string A "Y-m-d H:i:s" formatted value
+     */
     #[ORM\Column]
+    #[Assert\DateTime]
+    // #[Assert\Regex(
+    //     pattern: '/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/',
+    //     message: 'Le format de la date doit être dd/mm/YYYY H:i:s'
+    // )]
     #[Groups(['read', 'write'])]
-    private ?\DateTimeImmutable $launchDayAt = null;
+    private ?string $launchDayAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
@@ -273,12 +281,12 @@ class AirDrop
         return $this->imageName;
     }
 
-    public function getLaunchDayAt(): ?\DateTimeImmutable
+    public function getLaunchDayAt(): ?string
     {
         return $this->launchDayAt;
     }
 
-    public function setLaunchDayAt(\DateTimeImmutable $launchDayAt): static
+    public function setLaunchDayAt(string $launchDayAt): static
     {
         $this->launchDayAt = $launchDayAt;
 
