@@ -55,6 +55,10 @@ class AirDrop
     #[Groups(['read', 'write'])]
     private ?int $id = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?bool $status = false;
+
     #[ORM\Column(length: 255)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
@@ -124,6 +128,14 @@ class AirDrop
     #[Groups(['read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column]
+    #[Groups(['read', 'write'])]
+    private ?\DateTimeImmutable $launchDayAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $twitterUrl = null;
+
     public function __toString()
     {
         return $this->name;
@@ -133,6 +145,18 @@ class AirDrop
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function isStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?bool $status): static
+    {
+        $this->status = $status;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -247,5 +271,29 @@ class AirDrop
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+
+    public function getLaunchDayAt(): ?\DateTimeImmutable
+    {
+        return $this->launchDayAt;
+    }
+
+    public function setLaunchDayAt(\DateTimeImmutable $launchDayAt): static
+    {
+        $this->launchDayAt = $launchDayAt;
+
+        return $this;
+    }
+
+    public function getTwitterUrl(): ?string
+    {
+        return $this->twitterUrl;
+    }
+
+    public function setTwitterUrl(?string $twitterUrl): static
+    {
+        $this->twitterUrl = $twitterUrl;
+
+        return $this;
     }
 }

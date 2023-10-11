@@ -119,6 +119,7 @@ class Nft
     private ?User $user = null;
 
     #[ORM\Column]
+    #[Groups(['read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function __toString()
