@@ -36,7 +36,11 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[GetCollection()]
 
 #[Post(
-    denormalizationContext: ['groups' => ['write']],
+    denormalizationContext: [
+        'groups' => ['write'], 
+        'disable_type_enforcement' => true,
+        'collect_denormalization_errors' => true
+    ],
     inputFormats: ['multipart' => ['multipart/form-data']]
 )]
 
@@ -48,6 +52,7 @@ class Nft
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read', 'write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
@@ -71,11 +76,12 @@ class Nft
     )]
     private ?string $description = null;
 
-    #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'])]
-    private ?\DateTimeImmutable $updatedAt = null;
+    // #[ORM\Column(nullable: true)]
+    // #[Groups(['read', 'write'])]
+    // private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
+    // #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
     private ?int $price = null;
 
@@ -100,7 +106,7 @@ class Nft
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?string $imageName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -113,6 +119,7 @@ class Nft
     private ?Collecs $collec = null;
 
     #[ORM\OneToMany(mappedBy: 'nft', targetEntity: History::class, orphanRemoval: true)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['read', 'write'])]
     private Collection $histories;
 
@@ -121,7 +128,8 @@ class Nft
     #[Groups(['read', 'write'])]
     private ?User $user = null;
 
-    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[ORM\Column]
+    // (type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -135,7 +143,7 @@ class Nft
     public function __construct()
     {
         $this->histories = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();    
         // $user = $this->getUser();
         // $creator = $this->getUser();
         // $this->creator = new User();
@@ -176,7 +184,7 @@ class Nft
         return $this->price;
     }
 
-    public function setPrice(?int $price): static
+    public function setPrice(int $price): static
     {
         $this->price = $price;
 
@@ -248,17 +256,7 @@ class Nft
 
         return $this;
     }
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
@@ -266,7 +264,7 @@ class Nft
         if (null !== $imageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTimeImmutable();
+            $this->createdAt = new \DateTimeImmutable();
         }
     }
 

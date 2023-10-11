@@ -124,9 +124,9 @@ class AirDrop
     #[Groups(['read'])]
     private ?string $imageName = null;
 
-    #[ORM\Column(nullable: true)]
-    #[Groups(['read'])]
-    private ?\DateTimeImmutable $updatedAt = null;
+    // #[ORM\Column(nullable: true)]
+    // #[Groups(['read'])]
+    // private ?\DateTimeImmutable $updatedAt = null;
 
     /**
      * @var string A "Y-m-d H:i:s" formatted value
@@ -144,10 +144,26 @@ class AirDrop
     #[Groups(['read', 'write'])]
     private ?string $twitterUrl = null;
 
+    #[ORM\Column]
+    // (type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])
+    // #[Assert\DateTime(format: DateTime::ATOM, message: "Enable time is not a valid datetime.")]
+    // #[Assert\DateTime]
+    #[Groups(['read', 'write'])]
+    private ?\DateTimeImmutable $createdAt;
+
+    #[ORM\Column(length: 255)]
+    private ?string $blockchain = null;
+
+
     public function __toString()
     {
         return $this->name;
         // return $this->launchPrice;
+    }
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -244,17 +260,17 @@ class AirDrop
 
         return $this;
     }
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
+    // public function getUpdatedAt(): ?\DateTimeImmutable
+    // {
+    //     return $this->updatedAt;
+    // }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
+    // public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    // {
+    //     $this->updatedAt = $updatedAt;
 
-        return $this;
-    }
+    //     return $this;
+    // }
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
@@ -262,7 +278,7 @@ class AirDrop
         if (null !== $imageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTimeImmutable();
+            $this->createdAt = new \DateTimeImmutable();
         }
     }
 
@@ -301,6 +317,30 @@ class AirDrop
     public function setTwitterUrl(?string $twitterUrl): static
     {
         $this->twitterUrl = $twitterUrl;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getBlockchain(): ?string
+    {
+        return $this->blockchain;
+    }
+
+    public function setBlockchain(string $blockchain): static
+    {
+        $this->blockchain = $blockchain;
 
         return $this;
     }

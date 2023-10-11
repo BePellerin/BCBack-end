@@ -92,11 +92,12 @@ class Collecs
     #[Groups(['read', 'write'])]
     private ?Category $category = null;
 
-    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[ORM\Column]
+    // (type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])
     // #[Assert\DateTime(format: DateTime::ATOM, message: "Enable time is not a valid datetime.")]
     #[Assert\DateTime]
     #[Groups(['read', 'write'])]
-    private ?\DateTime $createdAt;
+    private ?\DateTimeImmutable $createdAt;
 
     #[ORM\ManyToOne(inversedBy: 'collecs')]
     #[ORM\JoinColumn(nullable: false)]

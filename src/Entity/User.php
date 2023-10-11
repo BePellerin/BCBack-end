@@ -148,8 +148,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read', 'write'])]
     private ?string $imageName = null;
 
-    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['read'])]
+    #[ORM\Column]
+    // (type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])
+    #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function __toString()
