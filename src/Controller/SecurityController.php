@@ -2,23 +2,31 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        if ($this->getUser()) {
 
-        // get the login error if there is one
+            return $this->redirectToRoute('home');
+        }
+        $userId = $this->getUser()->getUserIdentifier();
+
+        $user = $entityManager->getRepository(User::class)->find($userId);
+
+        if ($user && !$user->getStatus()) {
+            throw new CustomUserMessageAuthenticationException('Votre compte a été suspendu.');
+        }
         $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
@@ -30,12 +38,13 @@ class SecurityController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    #[Route(path: '/api/login', name:'api_login', methods: ['POST'])]
-    public function api_login(){
+    #[Route(path: '/api/login', name: 'api_login', methods: ['POST'])]
+    public function api_login()
+    {
         $user = $this->getUser();
         return $this->json([
-            'userIdentifier'=> $user->getUserIdentifier(),
-            'roles'=> $user->getRoles()
+            'userIdentifier' => $user->getUserIdentifier(),
+            'roles' => $user->getRoles()
         ]);
     }
-}   
+}

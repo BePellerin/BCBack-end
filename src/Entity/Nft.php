@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use DateTime;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -22,7 +23,10 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: NftRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']]
+    normalizationContext: ['groups' => ['read']],
+    paginationItemsPerPage: 25,
+    paginationMaximumItemsPerPage: 25,
+    paginationClientItemsPerPage: true
 )]
 
 #[Get()]
@@ -45,10 +49,23 @@ class Nft
 
     #[ORM\Column(length: 255)]
     #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 1,
+        max: 50,
+        minMessage: 'Le minimum est de 1 caractères',
+        maxMessage: 'Le maximum est de 50 caractères'
+    )]
     private ?string $title = null;
 
     #[ORM\Column(length: 300, nullable: true)]
     #[Groups(['read', 'write'])]
+    #[Assert\Length(
+        min: 200,
+        max: 750,
+        minMessage: 'Le minimum est de 200 caractères',
+        maxMessage: 'Le maximum est de 750 caractères'
+    )]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
@@ -61,10 +78,21 @@ class Nft
 
     #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
     #[Assert\File(
         maxSize: '5m',
         extensions: ['jpg', 'png', 'mp3'],
         extensionsMessage: 'Merci de télécharger un fichier jpg, png ou mp3 de moins de 5 MB ',
+    )]
+    #[Assert\Image(
+        minWidth: 50,
+        maxWidth: 5000,
+        minHeight: 50,
+        maxHeight: 5000,
+        minWidthMessage: "La largeur de l'image doit être au moins de 50 pixels",
+        maxWidthMessage: "La largeur de l'image ne peut pas dépasser 5000 pixels",
+        minHeightMessage: "La hauteur de l'image doit être au moins de 50 pixels",
+        maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 5000 pixels"
     )]
     private ?File $imageFile = null;
 
@@ -90,6 +118,9 @@ class Nft
     #[Groups(['read', 'write'])]
     private ?User $user = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function __toString()
     {
         return $this->title;
@@ -97,6 +128,7 @@ class Nft
     public function __construct()
     {
         $this->histories = new ArrayCollection();
+        $this->createdAt = new DateTime('now');
     }
 
     public function getId(): ?int
@@ -240,5 +272,17 @@ class Nft
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
     }
 }

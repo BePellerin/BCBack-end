@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
@@ -23,12 +24,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']]
+    normalizationContext: ['groups' => ['read']],
+    paginationItemsPerPage: 20,
+    paginationMaximumItemsPerPage: 20,
+    paginationClientItemsPerPage: true
 )]
-
 #[Get()]
 #[GetCollection()]
-
 #[Post(
     denormalizationContext: ['groups' => ['write']],
     inputFormats: ['multipart' => ['multipart/form-data']]
@@ -41,46 +43,70 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-      #[Groups(['read'])]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-      #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Assert\Email(
+        message: 'Cette Email n\'est pas valide.',
+    )]
     private ?string $email = null;
 
     #[ORM\Column]
-      #[Groups(['read', 'write'])]
-    private array $roles = ["ROLE_ADMIN","ROLE_USER"];
+    #[Groups(['read', 'write'])]
+    private array $roles = ["ROLE_ADMIN", "ROLE_USER"];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
-      #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 10,
+        minMessage: 'Votre mot de passe doit contenir au moins 10 caractères',
+    )]
+    #[Assert\Regex(
+        pattern: "/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/",
+        message: "Le mot de passe doit contenir au moins une lettre majuscule, un chiffre et un caractère spécial (@, $, !, %, *, ?, &)"
+    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-      #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'Le minimum est de 3 caractères',
+        maxMessage: 'Le maximum est de 50 caractères'
+    )]
     private ?string $username = null;
 
-    #[ORM\Column(length:255, nullable: true)]
-      #[Groups(['read', 'write'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
+    #[Assert\Length(
+        max: 50,
+        maxMessage: 'Le maximum est de 750 caractères'
+    )]
     private ?string $walletAdress = null;
 
     #[ORM\Column(nullable: true)]
-      #[Groups(['read', 'write'])]
-    private ?bool $status = NULL;
+    #[Groups(['read', 'write'])]
+    private ?bool $status = true;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-      #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'])]
     private ?string $decription = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-      #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'])]
     private ?string $twitterUrl = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -106,13 +132,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         extensions: ['jpg', 'png'],
         extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 1 MB ',
     )]
+    #[Assert\Image(
+        minWidth: 100,
+        maxWidth: 1500,
+        minHeight: 100,
+        maxHeight: 1500,
+        minWidthMessage: "La largeur de l'image doit être au moins de 100 pixels",
+        maxWidthMessage: "La largeur de l'image ne peut pas dépasser 1500 pixels",
+        minHeightMessage: "La hauteur de l'image doit être au moins de 100 pixels",
+        maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 1500 pixels"
+    )]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read', 'write'])]
     private ?string $imageName = null;
 
-    
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function __toString()
     {
@@ -122,6 +159,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->collecs = new ArrayCollection();
         $this->nfts = new ArrayCollection();
+        $this->createdAt = new DateTime('now');
     }
 
     public function getId(): ?int
@@ -217,20 +255,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    // public function getAvatar(): ?File
-    // {
-    //     return $this->avatar;
-    // }
-    // public function setAvatar(?File $avatar = null): void
-    // {
-    //     $this->avatar = $avatar;
 
-    //     if (null !== $avatar) {
-    //         // It is required that at least one field changes if you are using doctrine
-    //         // otherwise the event listeners won't be called and the file is lost
-    //         $this->createdAt = new \DateTimeImmutable();
-    //     }
-    // }
     public function isStatus(): ?bool
     {
         return $this->status;
@@ -243,17 +268,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // public function getCreatedAt(): ?\DateTimeImmutable
-    // {
-    //     return $this->createdAt;
-    // }
-
-    // public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    // {
-    //     $this->createdAt = $createdAt;
-
-    //     return $this;
-    // }
 
     public function getDecription(): ?string
     {
@@ -397,5 +411,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
     }
 }

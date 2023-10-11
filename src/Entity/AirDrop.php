@@ -27,7 +27,10 @@ use App\Controller\CreateMediaObjectAction;
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']]
+    normalizationContext: ['groups' => ['read']],
+    paginationItemsPerPage: 10,
+    paginationMaximumItemsPerPage: 10,
+    paginationClientItemsPerPage: true
 )]
 
 #[Get()]
@@ -54,28 +57,38 @@ class AirDrop
 
     #[ORM\Column(length: 255)]
     #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 1,
+        max: 50,
+        minMessage: 'Le minimum est de 1 caractères',
+        maxMessage: 'Le maximum est de 50 caractères'
+    )]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(
-        min: 10,
-        max: 500,
-        minMessage: 'Le minimum est de 10 caractères',
-        maxMessage: 'Le maximum est de 500 caractères'
+        min: 200,
+        max: 750,
+        minMessage: 'Le minimum est de 200 caractères',
+        maxMessage: 'Le maximum est de 750 caractères'
     )]
     #[Groups(['read', 'write'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
     private ?int $nftQuantity = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
     private ?string $category = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
     private ?int $launchPrice = null;
 
@@ -85,9 +98,10 @@ class AirDrop
 
     #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
     #[Assert\File(
         maxSize: '3000k',
-        extensions: ['jpg','png'],
+        extensions: ['jpg', 'png'],
         extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 3 MB',
     )]
     #[Assert\Image(
@@ -95,6 +109,10 @@ class AirDrop
         maxWidth: 5000,
         minHeight: 50,
         maxHeight: 5000,
+        minWidthMessage: "La largeur de l'image doit être au moins de 50 pixels",
+        maxWidthMessage: "La largeur de l'image ne peut pas dépasser 5000 pixels",
+        minHeightMessage: "La hauteur de l'image doit être au moins de 50 pixels",
+        maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 5000 pixels"
     )]
     private ?File $imageFile = null;
 

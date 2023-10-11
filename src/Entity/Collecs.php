@@ -26,7 +26,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: CollecsRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']]
+    normalizationContext: ['groups' => ['read']],
+    paginationItemsPerPage: 25,
+    paginationMaximumItemsPerPage: 25,
+    paginationClientItemsPerPage: true
 )]
 
 #[Get()]
@@ -49,15 +52,30 @@ class Collecs
 
     #[ORM\Column(length: 255)]
     #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 1,
+        max: 50,
+        minMessage: 'Le minimum est de 1 caractères',
+        maxMessage: 'Le maximum est de 50 caractères'
+    )]
     private ?string $title = null;
 
     #[ORM\Column(length: 500)]
     #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 200,
+        max: 750,
+        minMessage: 'Le minimum est de 200 caractères',
+        maxMessage: 'Le maximum est de 750 caractères'
+    )]
     private ?string $description = null;
 
 
     #[ORM\Column(length: 255)]
     #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
     private ?string $blockchain = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -87,10 +105,22 @@ class Collecs
 
     #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageNameAvatar')]
     #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
     #[Assert\File(
-        maxSize: '5m',
+        maxSize: '3m',
         extensions: ['jpg', 'png'],
-        extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 5 MB',
+        extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 3 MB',
+    )]
+    
+    #[Assert\Image(
+        minWidth: 100,
+        maxWidth: 1500,
+        minHeight: 100,
+        maxHeight: 1500,
+        minWidthMessage: "La largeur de l'image doit être au moins de 100 pixels",
+        maxWidthMessage: "La largeur de l'image ne peut pas dépasser 1500 pixels",
+        minHeightMessage: "La hauteur de l'image doit être au moins de 100 pixels",
+        maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 1500 pixels"
     )]
     private ?File $avatarPict = null;
 
@@ -105,10 +135,20 @@ class Collecs
 
     #[Vich\UploadableField(mapping: 'coverPict', fileNameProperty: 'imageNameCover')]
     #[Groups(['read', 'write'])]
-    // #[Assert\File(
-    //     maxSize: '5m',
-    //     extensions: ['jpg'],
-    //     extensionsMessage: 'Please upload a .jpg',
+    #[Assert\File(
+        maxSize: '5m',
+        extensions: ['jpg', 'png'],
+        extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 5 MB',
+    )]
+    // #[Assert\Image(
+    //     minWidth: 100,
+    //     maxWidth: 1500,
+    //     minHeight: 100,
+    //     maxHeight: 1500,
+    //     minWidthMessage: "La largeur de l'image doit être au moins de 100 pixels",
+    //     maxWidthMessage: "La largeur de l'image ne peut pas dépasser 1500 pixels",
+    //     minHeightMessage: "La hauteur de l'image doit être au moins de 100 pixels",
+    //     maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 1500 pixels"
     // )]
     private ?File $coverPict = null;
 
