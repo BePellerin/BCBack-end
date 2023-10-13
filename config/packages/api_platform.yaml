@@ -8,3 +8,94 @@ api_platform:
             vary: ['Content-Type', 'Authorization', 'Origin']
         extra_properties:
             standard_put: true
+# resources:
+#     App\Entity\Nft:
+#         collectionOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             post:
+#                 denormalization_context:
+#                     groups: ['write']
+#         itemOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             put:
+#                 denormalization_context:
+#                     groups: ['write']
+#     App\Entity\User:
+#         collectionOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             post:
+#                 denormalization_context:
+#                     groups: ['write']
+#         itemOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             put:
+#                 denormalization_context:
+#                     groups: ['write']
+#     App\Entity\History:
+#         collectionOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             post:
+#                 denormalization_context:
+#                     groups: ['write']
+#         itemOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             put:
+#                 denormalization_context:
+#                     groups: ['write']
+#     App\Entity\Collecs:
+#         collectionOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             post:
+#                 denormalization_context:
+#                     groups: ['write']
+#         itemOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             put:
+#                 denormalization_context:
+#                     groups: ['write']
+#     App\Entity\Category:
+#         collectionOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             post:
+#                 denormalization_context:
+#                     groups: ['write']
+#         itemOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             put:
+#                 denormalization_context:
+#                     groups: ['write']
+#     App\Entity\AirDrop:
+#         collectionOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             post:
+#                 denormalization_context:
+#                     groups: ['write']
+#         itemOperations:
+#             get:
+#                 normalization_context:
+#                     groups: ['read']
+#             put:
+#                 denormalization_context:
+#                     groups: ['write']
