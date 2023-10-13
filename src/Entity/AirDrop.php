@@ -152,6 +152,7 @@ class AirDrop
     private ?\DateTimeImmutable $createdAt;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $blockchain = null;
 
 

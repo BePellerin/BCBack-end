@@ -24,26 +24,23 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: NftRepository::class)]
-// #[ORM\HasLifecycleCallbacks]
+
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,
     paginationClientItemsPerPage: true
 )]
-
 #[Get()]
 #[GetCollection()]
-
 #[Post(
     denormalizationContext: [
-        'groups' => ['write'], 
-        'disable_type_enforcement' => true,
+        'groups' => ['write'],
+        // 'disable_type_enforcement' => true,
         'collect_denormalization_errors' => true
     ],
     inputFormats: ['multipart' => ['multipart/form-data']]
 )]
-
 #[Put()]
 #[Delete()]
 #[Patch()]
@@ -56,7 +53,6 @@ class Nft
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 1,
@@ -64,29 +60,22 @@ class Nft
         minMessage: 'Le minimum est de 1 caractères',
         maxMessage: 'Le maximum est de 50 caractères'
     )]
+    #[Groups(['read', 'write'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 750, nullable: true)]
-    #[Groups(['read', 'write'])]
     #[Assert\Length(
-        min: 10,
         max: 750,
-        minMessage: 'Le minimum est de 10 caractères',
         maxMessage: 'Le maximum est de 750 caractères'
     )]
+    #[Groups(['read', 'write'])]
     private ?string $description = null;
 
-    // #[ORM\Column(nullable: true)]
-    // #[Groups(['read', 'write'])]
-    // private ?\DateTimeImmutable $updatedAt = null;
-
     #[ORM\Column(nullable: true)]
-    // #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
     private ?int $price = null;
 
     #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName')]
-    #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\File(
         maxSize: '5m',
@@ -103,13 +92,14 @@ class Nft
         minHeightMessage: "La hauteur de l'image doit être au moins de 50 pixels",
         maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 5000 pixels"
     )]
+    #[Groups(['read', 'write'])]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read'])]
+    #[Groups(['read', 'write'])]
     private ?string $imageName = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     #[Groups(['read', 'write'])]
     private ?string $creator = null;
 
@@ -129,25 +119,18 @@ class Nft
     private ?User $user = null;
 
     #[ORM\Column]
-    // (type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    // private $tokenStorage;
 
     public function __toString()
     {
         return $this->title;
-        // return $this->createdAt;
     }
     public function __construct()
     {
         $this->histories = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();    
-        // $user = $this->getUser();
-        // $creator = $this->getUser();
-        // $this->creator = new User();
-        // $this->tokenStorage = $tokenStorage;
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -236,7 +219,6 @@ class Nft
     public function removeHistory(History $history): static
     {
         if ($this->histories->removeElement($history)) {
-            // set the owning side to null (unless already changed)
             if ($history->getNft() === $this) {
                 $history->setNft(null);
             }
@@ -262,8 +244,6 @@ class Nft
         $this->imageFile = $imageFile;
 
         if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
             $this->createdAt = new \DateTimeImmutable();
         }
     }
@@ -294,17 +274,4 @@ class Nft
 
         return $this;
     }
-
-
-    // /**
-    //  * @ORM\PrePersist
-    //  */
-    // public function prePersist()
-    // {
-    //     $user = $this->tokenStorage->getToken()->getUser();
-
-    //     if ($user instanceof UserInterface) {
-    //         $this->setCreator($user->getUserIdentifier());
-    //     }
-    // }
 }

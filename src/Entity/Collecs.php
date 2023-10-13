@@ -31,12 +31,14 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationMaximumItemsPerPage: 25,
     paginationClientItemsPerPage: true
 )]
-
 #[Get()]
 #[GetCollection()]
-
 #[Post(
-    denormalizationContext: ['groups' => ['write']],
+    denormalizationContext: [
+        'groups' => ['write'],
+        // 'disable_type_enforcement' => true,
+        'collect_denormalization_errors' => true
+    ],
     inputFormats: ['multipart' => ['multipart/form-data']]
 )]
 #[Put()]
@@ -61,14 +63,14 @@ class Collecs
     )]
     private ?string $title = null;
 
-    #[ORM\Column(length: 750)]
+    #[ORM\Column(length: 1500)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 200,
-        max: 750,
+        max: 1500,
         minMessage: 'Le minimum est de 200 caractères',
-        maxMessage: 'Le maximum est de 750 caractères'
+        maxMessage: 'Le maximum est de 1500 caractères'
     )]
     private ?string $description = null;
 
@@ -95,7 +97,7 @@ class Collecs
     #[ORM\Column]
     // (type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])
     // #[Assert\DateTime(format: DateTime::ATOM, message: "Enable time is not a valid datetime.")]
-    #[Assert\DateTime]
+    // #[Assert\DateTime]
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt;
 
@@ -112,7 +114,6 @@ class Collecs
         extensions: ['jpg', 'png'],
         extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 3 MB',
     )]
-    
     #[Assert\Image(
         minWidth: 100,
         maxWidth: 1500,
@@ -165,10 +166,11 @@ class Collecs
     {
         return $this->title;
     }
-    
+
     public function __construct()
     {
         $this->nfts = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -184,12 +186,7 @@ class Collecs
     public function setTitle(string $title): static
     {
         $this->title = $title;
-        // $this->createdAt = new \DateTimeImmutable();
         return $this;
-        
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            
     }
 
     public function getDescription(): ?string
@@ -293,14 +290,14 @@ class Collecs
 
         return $this;
     }
-    public function getUpdatedAtAvatar (): ?\DateTimeImmutable
+    public function getUpdatedAtAvatar(): ?\DateTimeImmutable
     {
-        return $this->updatedAtAvatar ;
+        return $this->updatedAtAvatar;
     }
 
-    public function setUpdatedAtAvatar (?\DateTimeImmutable $updatedAtAvatar ): static
+    public function setUpdatedAtAvatar(?\DateTimeImmutable $updatedAtAvatar): static
     {
-        $this->updatedAtAvatar  = $updatedAtAvatar ;
+        $this->updatedAtAvatar  = $updatedAtAvatar;
 
         return $this;
     }
@@ -369,5 +366,4 @@ class Collecs
     {
         return $this->imageNameCover;
     }
-    
 }

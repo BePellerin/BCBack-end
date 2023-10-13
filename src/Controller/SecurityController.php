@@ -13,19 +13,8 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getUser()) {
-
-            return $this->redirectToRoute('home');
-        }
-        $userId = $this->getUser()->getUserIdentifier();
-
-        $user = $entityManager->getRepository(User::class)->find($userId);
-
-        if ($user && !$user->getStatus()) {
-            throw new CustomUserMessageAuthenticationException('Votre compte a été suspendu.');
-        }
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -38,9 +27,21 @@ class SecurityController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    #[Route(path: '/api/login', name: 'api_login', methods: ['POST'])]
-    public function api_login()
+    #[Route(path: '/api/login', name: 'api_login', methods: ['GET','POST'])]
+    public function api_login(EntityManagerInterface $entityManager)
     {
+        if ($this->getUser()) {
+
+            return $this->redirectToRoute('home');
+        }
+        $userId = $this->getUser()->getUserIdentifier();
+
+        $user = $entityManager->getRepository(User::class)->find($userId);
+
+        if ($user && !$user->getStatus()) {
+            throw new CustomUserMessageAuthenticationException('Votre compte a été suspendu.');
+        }
+        
         $user = $this->getUser();
         return $this->json([
             'userIdentifier' => $user->getUserIdentifier(),

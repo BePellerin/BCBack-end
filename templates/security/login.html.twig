@@ -1,12 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!
+{% block title %}Espace Admin
 {% endblock %}
 
 {% block body %}
 	{% if app.user is null %}
 
-		<form class="container" method="post">
+
+		<form class="container " method="post">
+
 
 			<h1 style="margin:50px;">Administration de ViperCo</h1>
 			<br>
@@ -14,14 +16,6 @@
 			{% if error %}
 				<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 			{% endif %}
-
-			{# {% if app.user %}
-																						<div class="mb-3">
-																							You are logged in as
-																							{{ app.user.userIdentifier }},
-																							<a href="{{ path('app_logout') }}">Logout</a>
-																						</div>
-																					{% endif %} #}
 
 			<h1 class="h3 mb-3 font-weight-normal">Se connecter</h1>
 
@@ -38,9 +32,10 @@
 
 			<button style="margin-top:10px;" class="btn btn-lg btn-success" type="submit">
 
-				Sign in
+				Se connecter
 			</button>
 		</form>
+
 	{% endif %}
 
 	{% if app.user %}

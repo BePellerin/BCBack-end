@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20231009124411 extends AbstractMigration
+final class Version20231013105809 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20231009124411 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE air_drop CHANGE nft_quantity nft_quantity INT NOT NULL, CHANGE launch_price launch_price INT NOT NULL');
+        $this->addSql('ALTER TABLE collecs CHANGE description description VARCHAR(1500) NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE air_drop CHANGE nft_quantity nft_quantity INT DEFAULT NULL, CHANGE launch_price launch_price INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE collecs CHANGE description description VARCHAR(750) NOT NULL');
     }
 }

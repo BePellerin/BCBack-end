@@ -3,9 +3,9 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
-authentication_token:
-    path: /api/login
-    methods: ['POST']
-api_login:
-    path: /auth
-    methods: ['POST']
+# authentication_token:
+#     path: /api/login
+#     methods: ['GET','POST']
+# api_login:
+#     path: /auth
+#     methods: ['POST']
