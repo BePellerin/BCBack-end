@@ -21,13 +21,19 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model;
-use App\Controller\Admin\AirDropCrudController;
-use App\Controller\CreateMediaObjectAction;
+// use App\Controller\Admin\AirDropCrudController;
+// use App\Controller\CreateMediaObjectAction;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+    types: ['https://schema.org/AirDrop'],
+    operations: [
+        new GetCollection(),
+        new Post(inputFormats: ['multipart' => ['multipart/form-data']])
+    ],
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage: 10,
     paginationClientItemsPerPage: true
@@ -39,7 +45,7 @@ use App\Controller\CreateMediaObjectAction;
 #[Post(
     denormalizationContext: [
         'groups' => ['write'],
-        'disable_type_enforcement' => true,
+        // 'disable_type_enforcement' => true,
         'collect_denormalization_errors' => true
     ],
     inputFormats: ['multipart' => ['multipart/form-data']]
@@ -64,9 +70,9 @@ class AirDrop
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 1,
-        max: 50,
+        max: 15,
         minMessage: 'Le minimum est de 1 caractères',
-        maxMessage: 'Le maximum est de 50 caractères'
+        maxMessage: 'Le maximum est de 15 caractères'
     )]
     private ?string $name = null;
 
@@ -119,9 +125,13 @@ class AirDrop
         maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 5000 pixels"
     )]
     private ?File $imageFile = null;
-
-    #[ORM\Column(nullable: true)]
+    
+    #[ApiProperty(types: ['https://schema.org/contentUrl'])]
     #[Groups(['read'])]
+    public ?string $contentUrl = null;
+    
+    #[ORM\Column(nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $imageName = null;
 
     // #[ORM\Column(nullable: true)]
@@ -192,6 +202,18 @@ class AirDrop
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getContentUrl(): ?string
+    {
+        return $this->contentUrl;
+    }
+
+    public function setContentUrl(?string $contentUrl): static
+    {
+        $this->contentUrl = $contentUrl;
 
         return $this;
     }

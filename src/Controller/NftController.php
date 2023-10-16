@@ -84,4 +84,5 @@ class NftController extends AbstractController
 
         return $this->redirectToRoute('app_nft_index', [], Response::HTTP_SEE_OTHER);
     }
+    
 }

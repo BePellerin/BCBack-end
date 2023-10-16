@@ -13,15 +13,17 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            pattern: ^/auth
+        login:
+            pattern: ^/api/login
             stateless: true
-            provider: app_user_provider
-            # anonymous: true
             json_login:
-                check_path: api_login
+                check_path: /api/login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern:   ^/api
+            stateless: true
             jwt: ~
                 
         admin:
@@ -48,12 +50,13 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-          - { path: ^/logout, roles: ROLE_USER }
-        #   - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
-          - { path: ^/user, roles: ROLE_USER }
-          - { path: ^/user/new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-          - { path: ^/admin, roles: ROLE_ADMIN }
-          - { path: ^/$, roles: PUBLIC_ACCESS }
+        #   - { path: ^/logout, roles: ROLE_USER }
+          - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        #   - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        #   - { path: ^/user, roles: ROLE_USER }
+        #   - { path: ^/user/new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        #   - { path: ^/admin, roles: ROLE_ADMIN }
+        #   - { path: ^/$, roles: PUBLIC_ACCESS }
         #   - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
         #  - { path: ^/home, roles: ROLE_ADMIN }
         #  - { path: ^/nft, roles: ROLE_ADMIN }

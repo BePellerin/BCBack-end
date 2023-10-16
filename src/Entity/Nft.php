@@ -6,7 +6,6 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\NftRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -21,12 +20,19 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use ApiPlatform\Metadata\ApiProperty;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: NftRepository::class)]
 
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+    types: ['%kernel.project_dir%/public/images/nfts'],
+    operations: [
+        new GetCollection(),
+        new Post(inputFormats: ['multipart' => ['multipart/form-data']])
+    ],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,
     paginationClientItemsPerPage: true
@@ -122,6 +128,9 @@ class Nft
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ApiProperty(types: ['https://schema.org/contentUrl'])]
+    #[Groups(['read'])]
+    public ?string $contentUrl = null;
 
     public function __toString()
     {
@@ -134,7 +143,7 @@ class Nft
     }
 
     public function getId(): ?int
-    {
+    { 
         return $this->id;
     }
 
@@ -158,6 +167,18 @@ class Nft
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getContentUrl(): ?string
+    {
+        return $this->contentUrl;
+    }
+
+    public function setContentUrl(?string $contentUrl): static
+    {
+        $this->contentUrl = $contentUrl;
 
         return $this;
     }

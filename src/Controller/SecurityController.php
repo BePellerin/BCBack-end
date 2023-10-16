@@ -27,25 +27,47 @@ class SecurityController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    #[Route(path: '/api/login', name: 'api_login', methods: ['GET','POST'])]
-    public function api_login(EntityManagerInterface $entityManager)
+    #[Route(path: '/api/login', name: 'api_login', methods: ['POST'])]
+    public function api_login()
     {
-        if ($this->getUser()) {
-
-            return $this->redirectToRoute('home');
-        }
-        $userId = $this->getUser()->getUserIdentifier();
-
-        $user = $entityManager->getRepository(User::class)->find($userId);
-
-        if ($user && !$user->getStatus()) {
-            throw new CustomUserMessageAuthenticationException('Votre compte a été suspendu.');
-        }
-        
         $user = $this->getUser();
         return $this->json([
             'userIdentifier' => $user->getUserIdentifier(),
             'roles' => $user->getRoles()
         ]);
     }
+    
+    // #[Route(path: '/api/api_login', name: 'api_login', methods: ['GET','POST'])]
+    // public function api_login(EntityManagerInterface $entityManager)
+    // {
+    //     if ($this->getUser()) {
+
+    //         return $this->redirectToRoute('home');
+    //     }
+    //     $userId = $this->getUser()->getUserIdentifier();
+
+    //     $user = $entityManager->getRepository(User::class)->find($userId);
+
+    //     if ($user && !$user->getStatus()) {
+    //         throw new CustomUserMessageAuthenticationException('Votre compte a été suspendu.');
+    //     }
+        
+    //     $user = $this->getUser();
+    //     return $this->json([
+    //         'userIdentifier' => $user->getUserIdentifier(),
+    //         'roles' => $user->getRoles()
+    //     ]);
+    // }
+
+
+    // #[Route(path: '/api/login_check', name: 'api_login')]
+    // public function api_login(): JsonResponse
+    // {
+    //     $user=$this->getUser();
+
+    //     return new Response([
+    //         'email' => $user->getEmail(),
+    //         'roles' => $user->getRoles(),
+    //     ])
+    // }
 }

@@ -43,14 +43,15 @@ class AirDropCrudController extends AbstractCrudController
 
     // public function __invoke(Request $request): AirDrop
     // {
-    //     $uploadedFile = $request->files->get('file');
-    //     if (!$uploadedFile) {
-    //         throw new BadRequestHttpException('"file" is required');
-    //     }
 
-    //     $mediaObject = new AirDrop();
-    //     $mediaObject->file = $uploadedFile;
+    //     // if (!$uploadedFile) {
+    //     //     throw new BadRequestHttpException('imageFile is required');
+    //     // }
 
-    //     return $mediaObject;
+    //     $airDrop = new AirDrop();
+    //     $airDrop->setImageName($request->request->get('name'));
+    //     $airDrop->setImageFile($request->files->get('file'));
+    //     $airDrop->setCreatedAt(new \DateTimeImmutable());
+    //     return $airDrop;
     // }
 }

@@ -10,8 +10,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+// use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface as SerializationSerializerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/air/drop')]
 class AirDropController extends AbstractController
@@ -78,12 +82,26 @@ class AirDropController extends AbstractController
     #[IsGranted("ROLE_ADMIN")]
     public function delete(Request $request, AirDrop $airDrop, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$airDrop->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $airDrop->getId(), $request->request->get('_token'))) {
             $entityManager->remove($airDrop);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_air_drop_index', [], Response::HTTP_SEE_OTHER);
     }
-    
+
+
+    // public function __invoke(Request $request): AirDrop
+    // {
+
+    //     // if (!$uploadedFile) {
+    //     //     throw new BadRequestHttpException('imageFile is required');
+    //     // }
+
+    //     $airDrop = new AirDrop();
+    //     $airDrop->setImageName($request->request->get('name'));
+    //     $airDrop->setImageFile($request->files->get('file'));
+    //     $airDrop->setCreatedAt(new \DateTimeImmutable());
+    //     return $airDrop;
+    // }
 }
