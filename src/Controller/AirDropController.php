@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/air/drop')]
+#[AsController]
 class AirDropController extends AbstractController
 {
     #[Route('/', name: 'app_air_drop_index', methods: ['GET'])]
@@ -93,15 +94,14 @@ class AirDropController extends AbstractController
 
     // public function __invoke(Request $request): AirDrop
     // {
-
-    //     // if (!$uploadedFile) {
-    //     //     throw new BadRequestHttpException('imageFile is required');
-    //     // }
+    //     $uploadedFile = $request->files->get('file');
+    //     if (!$uploadedFile) {
+    //         throw new BadRequestHttpException('"file" is required');
+    //     }
 
     //     $airDrop = new AirDrop();
-    //     $airDrop->setImageName($request->request->get('name'));
-    //     $airDrop->setImageFile($request->files->get('file'));
-    //     $airDrop->setCreatedAt(new \DateTimeImmutable());
+    //     $airDrop->imageFile = $uploadedFile;
+
     //     return $airDrop;
     // }
 }

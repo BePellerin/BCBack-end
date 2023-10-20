@@ -21,22 +21,56 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model;
+use App\Controller\AirDropController;
+
 // use App\Controller\Admin\AirDropCrudController;
 // use App\Controller\CreateMediaObjectAction;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']],
+
+    normalizationContext: ['groups' => ['read'], 'groups' => ['media_object:read']],
     denormalizationContext: ['groups' => ['write']],
-    types: ['https://schema.org/AirDrop'],
-    operations: [
-        new GetCollection(),
-        new Post(inputFormats: ['multipart' => ['multipart/form-data']])
-    ],
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage: 10,
-    paginationClientItemsPerPage: true
+    paginationClientItemsPerPage: true,
+    operations: [
+        new GetCollection(),
+        new Post(
+            // inputFormats: ['multipart' => ['multipart/form-data']]
+            )
+    ],
+    // A voir
+    // iri: 'http://schema.org/MediaObject',
+    // itemOperations: ['get'],
+    // types: ['https://schema.org/MediaObject'],
+
+    // collectionOperations: [
+    //     'get',
+    //     'post' => [
+    //         'controller' => AirDropController::class,
+    //         'deserialize' => false,
+    //         'validation_groups' => ['Default', 'media_object_create'],
+    //         'openapi_context' => [
+    //             'requestBody' => [
+    //                 'content' => [
+    //                     'multipart/form-data' => [
+    //                         'schema' => [
+    //                             'type' => 'object',
+    //                             'properties' => [
+    //                                 'file' => [
+    //                                     'type' => 'string',
+    //                                     'format' => 'binary',
+    //                                 ],
+    //                             ],
+    //                         ],
+    //                     ],
+    //                 ],
+    //             ],
+    //         ],
+    //     ],
+    // ]
 )]
 
 #[Get()]
@@ -48,7 +82,7 @@ use ApiPlatform\OpenApi\Model;
         // 'disable_type_enforcement' => true,
         'collect_denormalization_errors' => true
     ],
-    inputFormats: ['multipart' => ['multipart/form-data']]
+    // inputFormats: ['multipart' => ['multipart/form-data']]
 )]
 #[Put()]
 #[Delete()]
@@ -69,10 +103,10 @@ class AirDrop
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(
-        min: 1,
-        max: 15,
-        minMessage: 'Le minimum est de 1 caractères',
-        maxMessage: 'Le maximum est de 15 caractères'
+        min: 5,
+        max: 20,
+        minMessage: 'Le minimum est de 5 caractères',
+        maxMessage: 'Le maximum est de 20 caractères'
     )]
     private ?string $name = null;
 
@@ -108,6 +142,7 @@ class AirDrop
 
     #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
+    #[Assert\NotNull(groups: ['media_object_create'])]
     #[Assert\NotBlank]
     #[Assert\File(
         maxSize: '3000k',
@@ -125,13 +160,13 @@ class AirDrop
         maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 5000 pixels"
     )]
     private ?File $imageFile = null;
-    
+
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['read'])]
+    #[Groups(['read', 'media_object:read'])]
     public ?string $contentUrl = null;
-    
+
     #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write'],)]
     private ?string $imageName = null;
 
     // #[ORM\Column(nullable: true)]
@@ -142,13 +177,13 @@ class AirDrop
      * @var string A "Y-m-d H:i:s" formatted value
      */
     #[ORM\Column]
-    #[Assert\DateTime]
+    // #[Assert\DateTime]
     // #[Assert\Regex(
     //     pattern: '/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/',
     //     message: 'Le format de la date doit être dd/mm/YYYY H:i:s'
     // )]
     #[Groups(['read', 'write'])]
-    private ?string $launchDayAt = null;
+    private ?\DateTimeImmutable $launchDayAt;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
@@ -237,11 +272,7 @@ class AirDrop
 
     public function setNftQuantity(int $nftQuantity): static
     {
-        // if (is_string($nftQuantity)) {
-        //     $nftQuantity = intval($nftQuantity);
-        // }
         $this->nftQuantity = $nftQuantity;
-
         return $this;
     }
 
@@ -264,11 +295,7 @@ class AirDrop
 
     public function setLaunchPrice(int $launchPrice): static
     {
-        // if (is_string($launchPrice)) {
-        //     $launchPrice = intval($launchPrice);
-        // }
         $this->launchPrice = $launchPrice;
-
         return $this;
     }
 
@@ -283,17 +310,7 @@ class AirDrop
 
         return $this;
     }
-    // public function getUpdatedAt(): ?\DateTimeImmutable
-    // {
-    //     return $this->updatedAt;
-    // }
 
-    // public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    // {
-    //     $this->updatedAt = $updatedAt;
-
-    //     return $this;
-    // }
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
@@ -325,7 +342,7 @@ class AirDrop
         return $this->launchDayAt;
     }
 
-    public function setLaunchDayAt(string $launchDayAt): static
+    public function setLaunchDayAt(\DateTimeImmutable $launchDayAt): static
     {
         $this->launchDayAt = $launchDayAt;
 

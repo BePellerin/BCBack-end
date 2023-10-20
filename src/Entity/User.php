@@ -33,7 +33,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[GetCollection()]
 #[Post(
     denormalizationContext: ['groups' => ['write']],
-    inputFormats: ['multipart' => ['multipart/form-data']]
+    // inputFormats: ['multipart' => ['multipart/form-data']]
 )]
 #[Put()]
 #[Delete()]
@@ -56,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     #[Groups(['read', 'write'])]
-    private array $roles = ["ROLE_ADMIN", "ROLE_USER"];
+    private array $roles = ["ROLE_USER"];
 
     /**
      * @var string The hashed password
@@ -78,10 +78,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(
-        min: 3,
-        max: 50,
+        min: 5,
+        max: 25,
         minMessage: 'Le minimum est de 3 caractères',
-        maxMessage: 'Le maximum est de 50 caractères'
+        maxMessage: 'Le maximum est de 25 caractères'
     )]
     private ?string $username = null;
 
