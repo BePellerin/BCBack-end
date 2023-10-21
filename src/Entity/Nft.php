@@ -124,9 +124,9 @@ class Nft
     #[Groups(['read', 'write'])]
     private ?User $user = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     #[Groups(['read', 'write'])]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
     #[Groups(['read'])]
@@ -289,7 +289,7 @@ class Nft
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 

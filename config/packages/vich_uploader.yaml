@@ -6,32 +6,32 @@ vich_uploader:
  
     mappings:
         user:
-            uri_prefix: /users
+            uri_prefix: /images/users
             upload_destination: '%kernel.project_dir%/public/images/users'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
             delete_on_update: true
             delete_on_remove: true
         coverPict:
-            uri_prefix: /collecs
+            uri_prefix: /images/collections/CoverPict
             upload_destination: '%kernel.project_dir%/public/images/collections/CoverPict'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
             delete_on_update: true
             delete_on_remove: true
         avatarPict:
-            uri_prefix: /collecs
+            uri_prefix: /images/collections/avatarPict
             upload_destination: '%kernel.project_dir%/public/images/collections/avatarPict'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
             delete_on_update: true
             delete_on_remove: true
         airDropPict:
-            uri_prefix: /air_drops
+            uri_prefix: /images/airDrops
             upload_destination: '%kernel.project_dir%/public/images/airDrops'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
             delete_on_update: false
             delete_on_remove: true
         nft:
-            uri_prefix: /nfts
+            uri_prefix: /images/nfts
             upload_destination: '%kernel.project_dir%/public/images/nfts'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
             delete_on_update: true
             delete_on_remove: true

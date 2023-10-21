@@ -30,57 +30,22 @@ use App\Controller\AirDropController;
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource(
 
-    normalizationContext: ['groups' => ['read'], 'groups' => ['media_object:read']],
-    denormalizationContext: ['groups' => ['write']],
+    normalizationContext: [
+        'groups' => ['read'],
+        // 'groups' => ['media_object:read']
+    ],
+    // denormalizationContext: ['groups' => ['write']],
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage: 10,
     paginationClientItemsPerPage: true,
-    operations: [
-        new GetCollection(),
-        new Post(
-            // inputFormats: ['multipart' => ['multipart/form-data']]
-            )
-    ],
-    // A voir
-    // iri: 'http://schema.org/MediaObject',
-    // itemOperations: ['get'],
-    // types: ['https://schema.org/MediaObject'],
-
-    // collectionOperations: [
-    //     'get',
-    //     'post' => [
-    //         'controller' => AirDropController::class,
-    //         'deserialize' => false,
-    //         'validation_groups' => ['Default', 'media_object_create'],
-    //         'openapi_context' => [
-    //             'requestBody' => [
-    //                 'content' => [
-    //                     'multipart/form-data' => [
-    //                         'schema' => [
-    //                             'type' => 'object',
-    //                             'properties' => [
-    //                                 'file' => [
-    //                                     'type' => 'string',
-    //                                     'format' => 'binary',
-    //                                 ],
-    //                             ],
-    //                         ],
-    //                     ],
-    //                 ],
-    //             ],
-    //         ],
-    //     ],
-    // ]
 )]
-
 #[Get()]
 #[GetCollection()]
-
 #[Post(
     denormalizationContext: [
         'groups' => ['write'],
         // 'disable_type_enforcement' => true,
-        'collect_denormalization_errors' => true
+        // 'collect_denormalization_errors' => true
     ],
     // inputFormats: ['multipart' => ['multipart/form-data']]
 )]
@@ -124,7 +89,7 @@ class AirDrop
     #[ORM\Column]
     #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
-    private ?int $nftQuantity = null;
+    private ?int $nftQuantity = 0;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -134,7 +99,7 @@ class AirDrop
     #[ORM\Column]
     #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
-    private ?int $launchPrice = null;
+    private ?int $launchPrice = 0;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
@@ -189,10 +154,7 @@ class AirDrop
     #[Groups(['read', 'write'])]
     private ?string $twitterUrl = null;
 
-    #[ORM\Column]
-    // (type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])
-    // #[Assert\DateTime(format: DateTime::ATOM, message: "Enable time is not a valid datetime.")]
-    // #[Assert\DateTime]
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt;
 
@@ -204,6 +166,7 @@ class AirDrop
     public function __toString()
     {
         return $this->name;
+        // return $this->nftQuantity;
         // return $this->launchPrice;
     }
 
@@ -315,11 +278,9 @@ class AirDrop
     {
         $this->imageFile = $imageFile;
 
-        if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->createdAt = new \DateTimeImmutable();
-        }
+        // if (null !== $imageFile) {
+        //     $this->createdAt = new \DateTimeImmutable();
+        // }
     }
 
     public function getImageFile(): ?File
@@ -366,7 +327,7 @@ class AirDrop
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 

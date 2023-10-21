@@ -94,10 +94,7 @@ class Collecs
     #[Groups(['read', 'write'])]
     private ?Category $category = null;
 
-    #[ORM\Column]
-    // (type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])
-    // #[Assert\DateTime(format: DateTime::ATOM, message: "Enable time is not a valid datetime.")]
-    // #[Assert\DateTime]
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt;
 
@@ -272,7 +269,7 @@ class Collecs
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 

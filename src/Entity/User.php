@@ -80,16 +80,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(
         min: 5,
         max: 25,
-        minMessage: 'Le minimum est de 3 caractères',
+        minMessage: 'Le minimum est de 5 caractères',
         maxMessage: 'Le maximum est de 25 caractères'
     )]
     private ?string $username = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['read', 'write'])]
     #[Assert\Length(
         max: 50,
-        maxMessage: 'Le maximum est de 750 caractères'
+        maxMessage: 'Le maximum est de 50 caractères'
     )]
     private ?string $walletAdress = null;
 
@@ -148,10 +148,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read', 'write'])]
     private ?string $imageName = null;
 
-    #[ORM\Column]
-    // (type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])
+    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     #[Groups(['read', 'write'])]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt;
 
     public function __toString()
     {
@@ -420,7 +419,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 

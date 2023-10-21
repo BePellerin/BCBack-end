@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use ApiPlatform\Metadata\Post;
 use App\Entity\AirDrop;
 use App\Form\AirDropType;
 use App\Repository\AirDropRepository;
@@ -16,6 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 // use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface as SerializationSerializerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile; 
 
 #[Route('/air/drop')]
 #[AsController]
@@ -92,6 +94,29 @@ class AirDropController extends AbstractController
     }
 
 
+    // public function __invoke(Request $request)
+    // {
+
+    //     $uploadedFile = $request->attributes->get('data');
+    //     // $file = $request->files->get('file'); 
+    //     $uploadedFile->setImageFile($request->files->get('imageFile'));
+    //     $uploadedFile->setUpdatedAt(new \DateTime());
+    //     return $uploadedFile;
+    // }
+
+    // public function __invoke(Request $request): AirDrop
+    // {
+    //     $uploadedFile = $request->files->get('file');
+    //     // if (!$uploadedFile) {
+    //     //     throw new BadRequestHttpException('"file" is required');
+    //     // }
+
+    //     $mediaObject = new AirDrop();
+    //     $mediaObject->file = $uploadedFile;
+
+    //     return $mediaObject;
+    // }
+
     // public function __invoke(Request $request): AirDrop
     // {
     //     $uploadedFile = $request->files->get('file');
@@ -99,9 +124,9 @@ class AirDropController extends AbstractController
     //         throw new BadRequestHttpException('"file" is required');
     //     }
 
-    //     $airDrop = new AirDrop();
-    //     $airDrop->imageFile = $uploadedFile;
+    //     $mediaObject = new AirDrop();
+    //     $mediaObject->file = $uploadedFile;
 
-    //     return $airDrop;
+    //     return $mediaObject;
     // }
 }
