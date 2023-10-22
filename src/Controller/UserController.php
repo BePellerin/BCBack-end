@@ -30,7 +30,7 @@ class UserController extends AbstractController
         $user = new User();
         $form = $this->createForm(User1Type::class, $user);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($user);
             $entityManager->flush();

@@ -5,14 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\AirDropRepository;
-use Attribute;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -20,11 +16,6 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\OpenApi\Model;
-use App\Controller\AirDropController;
-
-// use App\Controller\Admin\AirDropCrudController;
-// use App\Controller\CreateMediaObjectAction;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
@@ -34,20 +25,31 @@ use App\Controller\AirDropController;
         'groups' => ['read'],
         // 'groups' => ['media_object:read']
     ],
-    // denormalizationContext: ['groups' => ['write']],
+    denormalizationContext: ['groups' => ['write']],
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage: 10,
     paginationClientItemsPerPage: true,
+    // formats: [
+    //     'jsonld',
+    //     'json',
+    //     'html',
+    // ],
 )]
-#[Get()]
+#[Get(
+    normalizationContext: [
+        'groups' => ['read:collection', 'read:item', 'read:post'],
+        'openapi_definition_name'=>'Detail'
+        // 'groups' => ['media_object:read']
+    ],
+)]
 #[GetCollection()]
 #[Post(
     denormalizationContext: [
         'groups' => ['write'],
         // 'disable_type_enforcement' => true,
-        // 'collect_denormalization_errors' => true
+        'collect_denormalization_errors' => true
     ],
-    // inputFormats: ['multipart' => ['multipart/form-data']]
+    inputFormats: ['multipart' => ['multipart/form-data']]
 )]
 #[Put()]
 #[Delete()]
@@ -57,14 +59,14 @@ class AirDrop
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read', 'write'])]
     private ?bool $status = false;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 20)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(
@@ -89,7 +91,7 @@ class AirDrop
     #[ORM\Column]
     #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
-    private ?int $nftQuantity = 0;
+    private ?int $nftQuantity = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -99,7 +101,7 @@ class AirDrop
     #[ORM\Column]
     #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
-    private ?int $launchPrice = 0;
+    private ?int $launchPrice = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
@@ -107,7 +109,7 @@ class AirDrop
 
     #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
-    #[Assert\NotNull(groups: ['media_object_create'])]
+    // #[Assert\NotNull(groups: ['media_object_create'])]
     #[Assert\NotBlank]
     #[Assert\File(
         maxSize: '3000k',
@@ -126,27 +128,30 @@ class AirDrop
     )]
     private ?File $imageFile = null;
 
-    #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['read', 'media_object:read'])]
-    public ?string $contentUrl = null;
+    // #[ApiProperty(types: ['https://schema.org/contentUrl'])]
+    // #[Groups(['read', 'media_object:read'])]
+    // public ?string $contentUrl = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'],)]
+    // #[Groups(['read', 'write'],)]
     private ?string $imageName = null;
 
-    // #[ORM\Column(nullable: true)]
-    // #[Groups(['read'])]
-    // private ?\DateTimeImmutable $updatedAt = null;
-
     /**
-     * @var string A "Y-m-d H:i:s" formatted value
+     * @var string|null
      */
-    #[ORM\Column]
+    private $fileUrl;
+
+
+    // /**
+    //  * @var string A "Y-m-d H:i:s" formatted value
+    //  */
+
     // #[Assert\DateTime]
     // #[Assert\Regex(
     //     pattern: '/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/',
     //     message: 'Le format de la date doit être dd/mm/YYYY H:i:s'
     // )]
+    #[ORM\Column]
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $launchDayAt;
 
@@ -173,6 +178,13 @@ class AirDrop
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        
+        if ($this->nftQuantity !== null) {
+            $this->nftQuantity = (int) $this->nftQuantity;
+        }
+        if ($this->launchPrice !== null) {
+            $this->launchPrice = (int) $this->launchPrice;
+        }
     }
 
     public function getId(): ?int
@@ -204,17 +216,17 @@ class AirDrop
         return $this;
     }
 
-    public function getContentUrl(): ?string
-    {
-        return $this->contentUrl;
-    }
+    // public function getContentUrl(): ?string
+    // {
+    //     return $this->contentUrl;
+    // }
 
-    public function setContentUrl(?string $contentUrl): static
-    {
-        $this->contentUrl = $contentUrl;
+    // public function setContentUrl(?string $contentUrl): static
+    // {
+    //     $this->contentUrl = $contentUrl;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getDescription(): ?string
     {

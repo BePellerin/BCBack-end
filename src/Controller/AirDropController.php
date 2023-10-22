@@ -41,6 +41,8 @@ class AirDropController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $airDrop->setNftQuantity((int)$airDrop->getNftQuantity());
+            $airDrop->setLaunchPrice((int)$airDrop->getLaunchPrice());
             $entityManager->persist($airDrop);
             $entityManager->flush();
 
