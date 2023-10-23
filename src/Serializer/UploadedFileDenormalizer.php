@@ -7,6 +7,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 final class UploadedFileDenormalizer implements DenormalizerInterface
 {
+    
     /**
      * {@inheritdoc}
      */

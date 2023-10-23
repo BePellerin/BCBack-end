@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/nft')]
 class NftController extends AbstractController
 {
+    
     #[Route('/', name: 'app_nft_index', methods: ['GET'])]
     #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function index(NftRepository $nftRepository): Response

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\AirDropRepository;
@@ -9,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -21,35 +21,32 @@ use ApiPlatform\Metadata\Put;
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource(
 
-    normalizationContext: [
-        'groups' => ['read'],
-        // 'groups' => ['media_object:read']
-    ],
+    normalizationContext: ['groups' => ['read']],
     denormalizationContext: ['groups' => ['write']],
+    types: ['%kernel.project_dir%/public/images/airDrops'],
+    operations: [
+        new GetCollection(),
+        new Post(
+            inputFormats: ['multipart' => ['multipart/form-data']],
+            validationContext: ['groups' => ['Default', 'read']],
+            // deserialize: false,
+        )
+    ],
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage: 10,
     paginationClientItemsPerPage: true,
-    // formats: [
-    //     'jsonld',
-    //     'json',
-    //     'html',
-    // ],
 )]
-#[Get(
-    normalizationContext: [
-        'groups' => ['read:collection', 'read:item', 'read:post'],
-        'openapi_definition_name'=>'Detail'
-        // 'groups' => ['media_object:read']
-    ],
-)]
+#[Get()]
 #[GetCollection()]
 #[Post(
     denormalizationContext: [
         'groups' => ['write'],
-        // 'disable_type_enforcement' => true,
+        'disable_type_enforcement' => true,
         'collect_denormalization_errors' => true
+
     ],
-    inputFormats: ['multipart' => ['multipart/form-data']]
+    inputFormats: ['multipart' => ['multipart/form-data']],
+    // deserialize: false,
 )]
 #[Put()]
 #[Delete()]
@@ -59,7 +56,7 @@ class AirDrop
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read'])]
+    #[Groups(['read', 'write'])]
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
@@ -88,24 +85,26 @@ class AirDrop
     #[Groups(['read', 'write'])]
     private ?string $description = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank]
+    #[ORM\Column(nullable: true)]
     #[Groups(['read', 'write'])]
-    private ?int $nftQuantity = null;
+    private ?string $nftQuantity = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
     private ?string $category = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank]
+    #[ORM\Column(nullable: true)]
     #[Groups(['read', 'write'])]
-    private ?int $launchPrice = null;
+    private ?string $launchPrice = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
     private ?string $webSiteUrl = null;
+
+    #[ApiProperty(types: ['%kernel.project_dir%/public/images/airDrops'])]
+    #[Groups(['read', 'write'])]
+    public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
@@ -128,18 +127,10 @@ class AirDrop
     )]
     private ?File $imageFile = null;
 
-    // #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    // #[Groups(['read', 'media_object:read'])]
-    // public ?string $contentUrl = null;
 
     #[ORM\Column(nullable: true)]
-    // #[Groups(['read', 'write'],)]
     private ?string $imageName = null;
 
-    /**
-     * @var string|null
-     */
-    private $fileUrl;
 
 
     // /**
@@ -178,13 +169,13 @@ class AirDrop
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
-        
-        if ($this->nftQuantity !== null) {
-            $this->nftQuantity = (int) $this->nftQuantity;
-        }
-        if ($this->launchPrice !== null) {
-            $this->launchPrice = (int) $this->launchPrice;
-        }
+
+        // if ($this->nftQuantity !== null) {
+        //     $this->nftQuantity = (int) $this->nftQuantity;
+        // }
+        // if ($this->launchPrice !== null) {
+        //     $this->launchPrice = (int) $this->launchPrice;
+        // }
     }
 
     public function getId(): ?int
@@ -216,17 +207,17 @@ class AirDrop
         return $this;
     }
 
-    // public function getContentUrl(): ?string
-    // {
-    //     return $this->contentUrl;
-    // }
+    public function getContentUrl(): ?string
+    {
+        return $this->contentUrl;
+    }
 
-    // public function setContentUrl(?string $contentUrl): static
-    // {
-    //     $this->contentUrl = $contentUrl;
+    public function setContentUrl(?string $contentUrl): static
+    {
+        $this->contentUrl = $contentUrl;
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     public function getDescription(): ?string
     {
@@ -240,12 +231,12 @@ class AirDrop
         return $this;
     }
 
-    public function getNftQuantity(): ?int
+    public function getNftQuantity(): ?string
     {
         return $this->nftQuantity;
     }
 
-    public function setNftQuantity(int $nftQuantity): static
+    public function setNftQuantity(string $nftQuantity): static
     {
         $this->nftQuantity = $nftQuantity;
         return $this;
@@ -263,12 +254,12 @@ class AirDrop
         return $this;
     }
 
-    public function getLaunchPrice(): ?int
+    public function getLaunchPrice(): ?string
     {
         return $this->launchPrice;
     }
 
-    public function setLaunchPrice(int $launchPrice): static
+    public function setLaunchPrice(string $launchPrice): static
     {
         $this->launchPrice = $launchPrice;
         return $this;
@@ -310,7 +301,7 @@ class AirDrop
         return $this->imageName;
     }
 
-    public function getLaunchDayAt(): ?string
+    public function getLaunchDayAt(): ?\DateTimeImmutable
     {
         return $this->launchDayAt;
     }

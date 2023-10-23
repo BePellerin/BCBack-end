@@ -21,17 +21,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use ApiPlatform\Metadata\ApiProperty;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: NftRepository::class)]
 
 #[ApiResource(
+
+
+
+
+
+
+    // AVANT 
     normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']],
+    denormalizationContext: ['groups' => ['write']
+    // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
+],
     types: ['%kernel.project_dir%/public/images/nfts'],
     operations: [
         new GetCollection(),
-        new Post(inputFormats: ['multipart' => ['multipart/form-data']])
+        new Post(
+            inputFormats: ['multipart' => ['multipart/form-data']],
+            // deserialize: false,
+        )
     ],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,
@@ -42,10 +55,12 @@ use ApiPlatform\Metadata\ApiProperty;
 #[Post(
     denormalizationContext: [
         'groups' => ['write'],
-        // 'disable_type_enforcement' => true,
+        'disable_type_enforcement' => true,
         'collect_denormalization_errors' => true
+        // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
     ],
-    inputFormats: ['multipart' => ['multipart/form-data']]
+    inputFormats: ['multipart' => ['multipart/form-data']],
+    // deserialize: false,
 )]
 #[Put()]
 #[Delete()]
@@ -77,9 +92,15 @@ class Nft
     #[Groups(['read', 'write'])]
     private ?string $description = null;
 
+    
     #[ORM\Column(nullable: true)]
     #[Groups(['read', 'write'])]
+    #[Assert\GreaterThanOrEqual(0)]
     private ?int $price = null;
+
+    #[ApiProperty(types: ['%kernel.project_dir%/public/images/airDrops'])]
+    #[Groups(['read', 'write'])]
+    public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName')]
     #[Assert\NotBlank]
@@ -128,10 +149,6 @@ class Nft
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt;
 
-    #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['read'])]
-    public ?string $contentUrl = null;
-
     public function __toString()
     {
         return $this->title;
@@ -143,7 +160,7 @@ class Nft
     }
 
     public function getId(): ?int
-    { 
+    {
         return $this->id;
     }
 

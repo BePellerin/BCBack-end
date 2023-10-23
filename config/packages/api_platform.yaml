@@ -7,19 +7,20 @@ api_platform:
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
         extra_properties:
-            standard_put: true
+            standard_put: true    
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']   
+    patch_formats:
+        mime_types: ['multipart/form-data']
+        json: ['application/merge-patch+json']
     # swagger:
     #      api_keys:
     #          JWT:
     #             name: Authorization
-    #             type: header
-    mapping:
-        paths: ['%kernel.project_dir%/src/Entity']
-    # patch_formats:
-    #     json: ['application/merge-patch+json']
+    #             type: header   
     # formats:
     #     json: ['application/json']
-    #     jsonld: ['application/json+ld']
+    #     jsonld: ['application/ld+json']
     #     html: ['text/html']
     #     multipart: ['multipart/form-data']
     # formdata:

@@ -41,8 +41,6 @@ class AirDropController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $airDrop->setNftQuantity((int)$airDrop->getNftQuantity());
-            $airDrop->setLaunchPrice((int)$airDrop->getLaunchPrice());
             $entityManager->persist($airDrop);
             $entityManager->flush();
 
@@ -95,18 +93,25 @@ class AirDropController extends AbstractController
         return $this->redirectToRoute('app_air_drop_index', [], Response::HTTP_SEE_OTHER);
     }
 
-
+}
     // public function __invoke(Request $request)
     // {
+    //     $uploadedFile = $request->attributes->get('imageFile');
 
-    //     $uploadedFile = $request->attributes->get('data');
-    //     // $file = $request->files->get('file'); 
-    //     $uploadedFile->setImageFile($request->files->get('imageFile'));
-    //     $uploadedFile->setUpdatedAt(new \DateTime());
-    //     return $uploadedFile;
+    //     // Assurez-vous que 'uploadedFile' n'est pas null
+    //     if ($uploadedFile !== null) {
+    //         // Attribuez le fichier image à 'uploadedFile'
+
+
+    //     } else {
+    //         // Gérez le cas où 'uploadedFile' est null, par exemple en renvoyant une réponse d'erreur
+    //         // ou en lançant une exception appropriée.
+    //         // Exemple avec une exception :
+    //         throw new \Exception("L'objet 'uploadedFile' est null.");
+    //     }
     // }
 
-    // public function __invoke(Request $request): AirDrop
+    // public function __invoke(Request $request)
     // {
     //     $uploadedFile = $request->files->get('file');
     //     // if (!$uploadedFile) {
@@ -131,4 +136,4 @@ class AirDropController extends AbstractController
 
     //     return $mediaObject;
     // }
-}
+

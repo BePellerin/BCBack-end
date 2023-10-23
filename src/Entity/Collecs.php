@@ -27,6 +27,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: CollecsRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
+    operations: [
+        new GetCollection(),
+        new Post(
+            inputFormats: ['multipart' => ['multipart/form-data']],
+            // deserialize: false,
+        )
+    ],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,
     paginationClientItemsPerPage: true
