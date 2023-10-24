@@ -7,6 +7,7 @@ use App\Form\NftType;
 use App\Repository\NftRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -85,5 +86,19 @@ class NftController extends AbstractController
 
         return $this->redirectToRoute('app_nft_index', [], Response::HTTP_SEE_OTHER);
     }
-    
+
+    /**
+     * @Route("/images/nfts/{filename}", name="nft_image")
+     */
+    // public function downloadImage(string $filename)
+    // {
+    //     $path = $this->getParameter('kernel.project_dir') . '/public/images/nfts/' . $filename;
+    //     $file = new File($path);
+    //     $response = new Response();
+    //     $response->headers->set('Content-Type', 'image/jpeg'); // Remplacez par le type MIME approprié
+    //     $response->headers->set('Content-Disposition', 'inline; filename="' . $file->getFilename() . '"');
+    //     $response->setContent(file_get_contents($file->getPathname()));
+
+    //     return $response;
+    // }
 }
