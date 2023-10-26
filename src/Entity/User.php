@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,6 +26,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
+    denormalizationContext: [
+        'groups' => ['write']
+        // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
+    ],
+    types: ['%kernel.project_dir%/public/images/user'],
+    operations: [
+        new GetCollection(),
+        new Post(
+            // inputFormats: ['multipart' => ['multipart/form-data']],
+            // deserialize: false,
+        )
+    ],
     paginationItemsPerPage: 20,
     paginationMaximumItemsPerPage: 20,
     paginationClientItemsPerPage: true
@@ -32,8 +45,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Get()]
 #[GetCollection()]
 #[Post(
-    denormalizationContext: ['groups' => ['write']],
-    // inputFormats: ['multipart' => ['multipart/form-data']]
+    denormalizationContext: [
+        'groups' => ['write'],
+        'disable_type_enforcement' => true,
+        'collect_denormalization_errors' => true
+        // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
+    ],
+    inputFormats: ['multipart' => ['multipart/form-data']],
+    // deserialize: false,
 )]
 #[Put()]
 #[Delete()]
@@ -124,6 +143,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Nft::class, orphanRemoval: true)]
     #[Groups(['read', 'write'])]
     private Collection $nfts;
+
+    #[ApiProperty(types: ['%kernel.project_dir%/public/images/users'])]
+    #[Groups(['read', 'write'])]
+    public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: 'user', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
@@ -388,6 +411,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getContentUrl(): ?string
+    {
+        return $this->contentUrl;
+    }
+
+    public function setContentUrl(?string $contentUrl): static
+    {
+        $this->contentUrl = $contentUrl;
+
+        return $this;
+    }
+    
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;

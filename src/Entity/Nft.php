@@ -27,13 +27,6 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 #[ORM\Entity(repositoryClass: NftRepository::class)]
 
 #[ApiResource(
-
-
-
-
-
-
-    // AVANT 
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: ['groups' => ['write']
     // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
@@ -70,7 +63,7 @@ class Nft
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]

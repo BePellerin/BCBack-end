@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -56,7 +57,7 @@ class Collecs
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
@@ -110,6 +111,11 @@ class Collecs
     #[Groups(['read', 'write'])]
     private ?User $user = null;
 
+
+    #[ApiProperty(types: ['%kernel.project_dir%/public/images/avatarPict'])]
+    #[Groups(['read', 'write'])]
+    public ?string $contentUrlAvatar = null;
+
     #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageNameAvatar')]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
@@ -138,6 +144,10 @@ class Collecs
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $updatedAtAvatar = null;
 
+
+    #[ApiProperty(types: ['%kernel.project_dir%/public/images/CoverPict'])]
+    #[Groups(['read', 'write'])]
+    public ?string $contentUrlCover = null;
 
     #[Vich\UploadableField(mapping: 'coverPict', fileNameProperty: 'imageNameCover')]
     #[Groups(['read', 'write'])]
@@ -369,5 +379,27 @@ class Collecs
     public function getImageNameCover(): ?string
     {
         return $this->imageNameCover;
+    }
+    public function getContentUrlAvatar(): ?string
+    {
+        return $this->contentUrlAvatar;
+    }
+
+    public function setContentUrlAvatar(?string $contentUrlAvatar): static
+    {
+        $this->contentUrlAvatar = $contentUrlAvatar;
+
+        return $this;
+    }
+    public function getContentUrlCover(): ?string
+    {
+        return $this->contentUrlCover;
+    }
+
+    public function setContentUrlCover(?string $contentUrlCover): static
+    {
+        $this->contentUrlCover = $contentUrlCover;
+
+        return $this;
     }
 }

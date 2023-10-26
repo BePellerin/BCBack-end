@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/collecs')]
-#[IsGranted("ROLE_ADMIN", "ROLE_USER")]
+// #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
 class CollecsController extends AbstractController
 {
     #[Route('/', name: 'app_collecs_index', methods: ['GET'])]
