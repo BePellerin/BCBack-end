@@ -16,6 +16,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\Admin\UserCrudController;
+use App\Controller\UserController;
 use DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -34,6 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new GetCollection(),
         new Post(
+            
             // inputFormats: ['multipart' => ['multipart/form-data']],
             // deserialize: false,
         )
@@ -45,6 +48,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Get()]
 #[GetCollection()]
 #[Post(
+    // controller: UserController::class,
+    // controller: UserCrudController::class,
     denormalizationContext: [
         'groups' => ['write'],
         'disable_type_enforcement' => true,
@@ -423,7 +428,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
+
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
