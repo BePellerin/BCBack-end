@@ -89,7 +89,7 @@ class Nft
     #[ORM\Column(nullable: true)]
     #[Groups(['read', 'write'])]
     #[Assert\GreaterThanOrEqual(0)]
-    private ?int $price = null;
+    private ?string $price = null;
 
     #[ApiProperty(types: ['%kernel.project_dir%/public/images/airDrops'])]
     #[Groups(['read', 'write'])]
@@ -193,12 +193,12 @@ class Nft
         return $this;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function setPrice(int $price): static
+    public function setPrice(string $price): static
     {
         $this->price = $price;
 

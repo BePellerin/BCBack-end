@@ -26,8 +26,11 @@ final class CollecNormalizer implements ContextAwareNormalizerInterface, Normali
     {
         $context[self::ALREADY_CALLED] = true;
 
-        $object->contentUrlAvatar = str_replace(' ', '_', $this->storage->resolveUri($object, 'avatarPict'));
-        $object->contentUrlCover = str_replace(' ', '_', $this->storage->resolveUri($object, 'coverPict'));
+        $object->contentUrlAvatar = $this->storage->resolveUri($object, 'avatarPict');
+        $object->contentUrlCover = $this->storage->resolveUri($object, 'coverPict');
+
+        // $object->contentUrlAvatar = str_replace(' ', '_', $this->storage->resolveUri($object, 'avatarPict'));
+        // $object->contentUrlCover = str_replace(' ', '_', $this->storage->resolveUri($object, 'coverPict'));
 
         return $this->normalizer->normalize($object, $format, $context);
     }

@@ -65,7 +65,7 @@ class AirDrop
 
     #[ORM\Column(length: 20)]
     #[Groups(['read', 'write'])]
-    #[Assert\NotBlank]
+    // #[Assert\NotBlank]
     #[Assert\Length(
         min: 5,
         max: 20,
@@ -75,7 +75,7 @@ class AirDrop
     private ?string $name = null;
 
     #[ORM\Column(length: 750)]
-    #[Assert\NotBlank]
+    // #[Assert\NotBlank]
     #[Assert\Length(
         min: 10,
         max: 750,
@@ -90,7 +90,7 @@ class AirDrop
     private ?string $nftQuantity = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+    // #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
     private ?string $category = null;
 
@@ -109,7 +109,7 @@ class AirDrop
     #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
     #[Groups(['read', 'write'])]
     // #[Assert\NotNull(groups: ['media_object_create'])]
-    #[Assert\NotBlank]
+    // #[Assert\NotBlank]
     #[Assert\File(
         maxSize: '3000k',
         extensions: ['jpg', 'png'],
