@@ -9,6 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use App\Controller\JsonResponse;
+use App\Entity\User as EntityUser;
+use Symfony\Component\Security\Core\User;
 
 class SecurityController extends AbstractController
 {
@@ -27,17 +30,34 @@ class SecurityController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    #[Route(path: '/api/login', name: 'api_login', methods: ['POST'])]
-    public function api_login()
+    #[Route(path: '/api/login_check', name: 'api_login', methods: ['POST'])]
+    public function api_login(EntityUser $user1)
     {
         $user = $this->getUser();
         return $this->json([
             'userIdentifier' => $user->getUserIdentifier(),
-            'roles' => $user->getRoles()
+            'roles' => $user->getRoles(),
+            // 'id' => $user->getId(),
+            // 'email' => $user->getEmail(),
         ]);
     }
-    
-    // #[Route(path: '/api/api_login', name: 'api_login', methods: ['GET','POST'])]
+
+    // ---------------TEST 1--------------
+
+    // #[Route(path: '/api/login', name: 'api_login', methods: ['POST'])]
+    // public function api_login(): JsonResponse
+    // {
+    //     $user = $this->getUser();
+    //     return new Response([
+    //         'email' => $user->getEmail(),
+    //         'roles' => $user->getRoles()
+    //     ]);
+    // }
+
+    // ---------------TEST 2--------------
+
+
+    // #[Route(path: '/api/api_login', name: 'api_login', methods: ['POST'])]
     // public function api_login(EntityManagerInterface $entityManager)
     // {
     //     if ($this->getUser()) {
@@ -51,7 +71,7 @@ class SecurityController extends AbstractController
     //     if ($user && !$user->getStatus()) {
     //         throw new CustomUserMessageAuthenticationException('Votre compte a été suspendu.');
     //     }
-        
+
     //     $user = $this->getUser();
     //     return $this->json([
     //         'userIdentifier' => $user->getUserIdentifier(),
@@ -60,14 +80,5 @@ class SecurityController extends AbstractController
     // }
 
 
-    // #[Route(path: '/api/login_check', name: 'api_login')]
-    // public function api_login(): JsonResponse
-    // {
-    //     $user=$this->getUser();
 
-    //     return new Response([
-    //         'email' => $user->getEmail(),
-    //         'roles' => $user->getRoles(),
-    //     ])
-    // }
 }
