@@ -33,31 +33,26 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 ],
     types: ['%kernel.project_dir%/public/images/nfts'],
     operations: [
+        new Get(),
         new GetCollection(),
+        new Patch,
         new Post(
+            denormalizationContext: [
+                'groups' => ['write'],
+                'disable_type_enforcement' => true,
+                'collect_denormalization_errors' => true
+                // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
+            ],
             inputFormats: ['multipart' => ['multipart/form-data']],
             // deserialize: false,
-        )
+        ),
+        new Put,
+        new Delete()
     ],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,
     paginationClientItemsPerPage: true
 )]
-#[Get()]
-#[GetCollection()]
-#[Post(
-    denormalizationContext: [
-        'groups' => ['write'],
-        'disable_type_enforcement' => true,
-        'collect_denormalization_errors' => true
-        // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
-    ],
-    inputFormats: ['multipart' => ['multipart/form-data']],
-    // deserialize: false,
-)]
-#[Put()]
-#[Delete()]
-#[Patch()]
 class Nft
 {
     #[ORM\Id]

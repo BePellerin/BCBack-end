@@ -22,6 +22,8 @@ use DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[Vich\Uploadable]
@@ -34,19 +36,31 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     types: ['%kernel.project_dir%/public/images/user'],
     operations: [
-        new GetCollection(),
+        new Get(),
+        new GetCollection(
+            routeName: 'app_data_user', name: 'app_data_user'
+    ),
+        new Patch,
         new Post(
-            
+            // controller: UserController::class,
+            // controller: UserCrudController::class,
+            // denormalizationContext: [
+            //     'groups' => ['write'],
+            //     'disable_type_enforcement' => true,
+            //     'collect_denormalization_errors' => true
+            // ],
+            // processor: UserPasswordHasher::class,
             // inputFormats: ['multipart' => ['multipart/form-data']],
             // deserialize: false,
-        )
+        ),
+        new Put,
+        new Delete()
     ],
     paginationItemsPerPage: 20,
     paginationMaximumItemsPerPage: 20,
     paginationClientItemsPerPage: true
 )]
 #[Get()]
-#[GetCollection()]
 #[Post(
     // controller: UserController::class,
     // controller: UserCrudController::class,
@@ -56,12 +70,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'collect_denormalization_errors' => true
         // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
     ],
+    // processor: UserPasswordHasher::class,
     inputFormats: ['multipart' => ['multipart/form-data']],
     // deserialize: false,
 )]
-#[Put()]
-#[Delete()]
-#[Patch()]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -184,8 +196,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->email;
     }
-    public function __construct()
+    public function __construct(
+        // UserPasswordHasherInterface $password
+    )
     {
+        // $this->password = $password;
         $this->collecs = new ArrayCollection();
         $this->nfts = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
@@ -248,6 +263,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+        // $this->password = $this->password->hashPassword($this, $password);
 
         return $this;
     }

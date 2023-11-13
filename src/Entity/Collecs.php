@@ -26,32 +26,29 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: CollecsRepository::class)]
+// #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
     operations: [
+        new Get(),
         new GetCollection(),
+        new Patch,
         new Post(
-            inputFormats: ['multipart' => ['multipart/form-data']],
+            denormalizationContext: [
+                'groups' => ['write'],
+                // 'disable_type_enforcement' => true,
+                'collect_denormalization_errors' => true
+            ],
+            inputFormats: ['multipart' => ['multipart/form-data']]
             // deserialize: false,
-        )
+        ),
+        new Put,
+        new Delete()
     ],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,
     paginationClientItemsPerPage: true
 )]
-#[Get()]
-#[GetCollection()]
-#[Post(
-    denormalizationContext: [
-        'groups' => ['write'],
-        // 'disable_type_enforcement' => true,
-        'collect_denormalization_errors' => true
-    ],
-    inputFormats: ['multipart' => ['multipart/form-data']]
-)]
-#[Put()]
-#[Delete()]
-#[Patch()]
 class Collecs
 {
     #[ORM\Id]
@@ -71,16 +68,21 @@ class Collecs
     )]
     private ?string $title = null;
 
-    #[ORM\Column(length: 1500)]
+    #[ORM\Column]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 200,
-        max: 1500,
-        minMessage: 'Le minimum est de 200 caractères',
-        maxMessage: 'Le maximum est de 1500 caractères'
-    )]
     private ?string $description = null;
+
+    // #[ORM\Column(length: 1500)]
+    // #[Groups(['read', 'write'])]
+    // #[Assert\NotBlank]
+    // #[Assert\Length(
+    //     min: 200,
+    //     max: 1500,
+    //     minMessage: 'Le minimum est de 200 caractères',
+    //     maxMessage: 'Le maximum est de 1500 caractères'
+    // )]
+    // private ?string $description = null;
 
 
     #[ORM\Column(length: 255)]
@@ -97,7 +99,8 @@ class Collecs
     #[Groups(['read', 'write'])]
     private Collection $nfts;
 
-    #[ORM\ManyToOne(inversedBy: 'collecs')]
+    // #[ORM\ManyToOne(inversedBy: 'collecs')]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'collecs')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['read', 'write'])]
     private ?Category $category = null;
@@ -124,16 +127,16 @@ class Collecs
         extensions: ['jpg', 'png'],
         extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 3 MB',
     )]
-    #[Assert\Image(
-        minWidth: 100,
-        maxWidth: 1500,
-        minHeight: 100,
-        maxHeight: 1500,
-        minWidthMessage: "La largeur de l'image doit être au moins de 100 pixels",
-        maxWidthMessage: "La largeur de l'image ne peut pas dépasser 1500 pixels",
-        minHeightMessage: "La hauteur de l'image doit être au moins de 100 pixels",
-        maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 1500 pixels"
-    )]
+    // #[Assert\Image(
+    //     minWidth: 100,
+    //     maxWidth: 1500,
+    //     minHeight: 100,
+    //     maxHeight: 1500,
+    //     minWidthMessage: "La largeur de l'image doit être au moins de 100 pixels",
+    //     maxWidthMessage: "La largeur de l'image ne peut pas dépasser 1500 pixels",
+    //     minHeightMessage: "La hauteur de l'image doit être au moins de 100 pixels",
+    //     maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 1500 pixels"
+    // )]
     private ?File $avatarPict = null;
 
     #[ORM\Column(nullable: true)]
@@ -274,7 +277,7 @@ class Collecs
         return $this->category;
     }
 
-    public function setCategory(?Category $category): static
+    public function setCategory(?Category $category): self
     {
         $this->category = $category;
 

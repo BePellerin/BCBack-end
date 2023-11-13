@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
@@ -25,32 +26,27 @@ use ApiPlatform\Metadata\Put;
     denormalizationContext: ['groups' => ['write']],
     types: ['%kernel.project_dir%/public/images/airDrops'],
     operations: [
+        new Get(),
         new GetCollection(),
+        new Patch,
         new Post(
             inputFormats: ['multipart' => ['multipart/form-data']],
             validationContext: ['groups' => ['Default', 'read']],
+            denormalizationContext: [
+                'groups' => ['write'],
+                'disable_type_enforcement' => true,
+                'collect_denormalization_errors' => true
+
+            ],
             // deserialize: false,
-        )
+        ),
+        new Put,
+        new Delete()
     ],
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage: 10,
     paginationClientItemsPerPage: true,
 )]
-#[Get()]
-#[GetCollection()]
-#[Post(
-    denormalizationContext: [
-        'groups' => ['write'],
-        'disable_type_enforcement' => true,
-        'collect_denormalization_errors' => true
-
-    ],
-    inputFormats: ['multipart' => ['multipart/form-data']],
-    // deserialize: false,
-)]
-#[Put()]
-#[Delete()]
-#[Patch()]
 class AirDrop
 {
     #[ORM\Id]
@@ -158,7 +154,9 @@ class AirDrop
     #[Groups(['read', 'write'])]
     private ?string $blockchain = null;
 
-
+    // public function computeSlug(SluggerInterface $slugger):void{
+    //     $this->slug=$slugger->slug($this);
+    // }
     public function __toString()
     {
         return $this->name;
