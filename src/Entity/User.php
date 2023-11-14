@@ -31,9 +31,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     types: ['%kernel.project_dir%/public/images/user'],
     operations: [
-        new Get(normalizationContext: ['groups' => ['read']]),
+        new Get(
+            // normalizationContext: ['groups' => ['read']]
+    ),
+        new GetCollection(),
         new GetCollection(
-            // routeName: 'app_data_user', name: 'app_data_user'
+            routeName: 'app_data_user', name: 'app_data_user'
         ),
         new Patch(
             security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
@@ -70,7 +73,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     validationContext: ['groups' => ['write']],
     processor: UserPasswordHasher::class,
-    inputFormats: ['multipart' => ['multipart/form-data']],
+    inputFormats: ['multipart' => ['multipart/form-data'], 'json' => ['application/json']],
     // deserialize: false,
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

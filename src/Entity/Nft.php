@@ -33,7 +33,9 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 ],
     types: ['%kernel.project_dir%/public/images/nfts'],
     operations: [
-        new Get(normalizationContext: ['groups' => ['read']]),
+        new Get(
+            // normalizationContext: ['groups' => ['read']]
+    ),
         new GetCollection(),
         new Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user"),
         new Post(

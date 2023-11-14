@@ -26,7 +26,9 @@ use Symfony\Component\String\Slugger\SluggerInterface;
     denormalizationContext: ['groups' => ['write']],
     types: ['%kernel.project_dir%/public/images/airDrops'],
     operations: [
-        new Get(normalizationContext: ['groups' => ['read']]),
+        new Get(
+            // normalizationContext: ['groups' => ['read']]
+    ),
         new GetCollection(),
         new Patch(security: "is_granted('ROLE_ADMIN')"),
         new Post(
