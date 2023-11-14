@@ -33,9 +33,9 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 ],
     types: ['%kernel.project_dir%/public/images/nfts'],
     operations: [
-        new Get(),
+        new Get(normalizationContext: ['groups' => ['read']]),
         new GetCollection(),
-        new Patch,
+        new Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user"),
         new Post(
             denormalizationContext: [
                 'groups' => ['write'],
@@ -46,8 +46,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
             inputFormats: ['multipart' => ['multipart/form-data']],
             // deserialize: false,
         ),
-        new Put,
-        new Delete()
+        new Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user"),
     ],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,

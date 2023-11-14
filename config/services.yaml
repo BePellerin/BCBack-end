@@ -22,8 +22,8 @@ services:
     App\State\UserPasswordHasher:
         bind:
             $processor: '@api_platform.doctrine.orm.state.persist_processor'
-        arguments:
-            $passwordHasher: '@security.password_hasher'
+        # arguments:
+        #     $passwordHasher: '@security.password_hasher'
     # alias:
     #     ApiPlatform\State\ProcessorInterface: api_platform.state_processor.locator
     # App\ApiResource\hashPassword:

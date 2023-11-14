@@ -15,15 +15,10 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use App\Controller\Admin\UserCrudController;
-use App\Controller\UserController;
-use DateTime;
+use App\State\UserPasswordHasher;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[Vich\Uploadable]
@@ -36,30 +31,33 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     types: ['%kernel.project_dir%/public/images/user'],
     operations: [
-        new Get(),
+        new Get(normalizationContext: ['groups' => ['read']]),
         new GetCollection(
-            routeName: 'app_data_user', name: 'app_data_user'
-    ),
-        new Patch,
-        new Post(
-            // controller: UserController::class,
-            // controller: UserCrudController::class,
-            // denormalizationContext: [
-            //     'groups' => ['write'],
-            //     'disable_type_enforcement' => true,
-            //     'collect_denormalization_errors' => true
-            // ],
-            // processor: UserPasswordHasher::class,
-            // inputFormats: ['multipart' => ['multipart/form-data']],
-            // deserialize: false,
+            // routeName: 'app_data_user', name: 'app_data_user'
         ),
-        new Put,
-        new Delete()
+        new Patch(
+            security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
+    ),
+        // new Post(
+        //     denormalizationContext: [
+        //         'groups' => ['write'],
+        //         'disable_type_enforcement' => true,
+        //         'collect_denormalization_errors' => true
+        //     ],
+        //     validationContext:['groups' => ['write']],
+        //     processor: UserPasswordHasher::class,
+        //     inputFormats: ['multipart' => ['multipart/form-data']],
+        //     deserialize: false,
+        // ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
+        ),
     ],
     paginationItemsPerPage: 20,
     paginationMaximumItemsPerPage: 20,
     paginationClientItemsPerPage: true
 )]
+// #[Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user")]
 #[Get()]
 #[Post(
     // controller: UserController::class,
@@ -70,7 +68,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'collect_denormalization_errors' => true
         // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
     ],
-    // processor: UserPasswordHasher::class,
+    validationContext: ['groups' => ['write']],
+    processor: UserPasswordHasher::class,
     inputFormats: ['multipart' => ['multipart/form-data']],
     // deserialize: false,
 )]
@@ -109,6 +108,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         message: "Le mot de passe doit contenir au moins une lettre majuscule, un chiffre et un caractère spécial (@, $, !, %, *, ?, &)"
     )]
     private ?string $password = null;
+
+    #[Assert\NotBlank(groups: ['user:create'])]
+    #[Groups(['read', 'write'])]
+    private ?string $clearPassword = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['read', 'write'])]
@@ -265,6 +268,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
         // $this->password = $this->password->hashPassword($this, $password);
 
+        return $this;
+    }
+
+    public function getClearPassword(): ?string
+    {
+        return $this->clearPassword;
+    }
+
+    public function setClearPassword(?string $clearPassword): self
+    {
+        $this->clearPassword = $clearPassword;
         return $this;
     }
 

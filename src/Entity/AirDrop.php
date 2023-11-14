@@ -26,9 +26,9 @@ use Symfony\Component\String\Slugger\SluggerInterface;
     denormalizationContext: ['groups' => ['write']],
     types: ['%kernel.project_dir%/public/images/airDrops'],
     operations: [
-        new Get(),
+        new Get(normalizationContext: ['groups' => ['read']]),
         new GetCollection(),
-        new Patch,
+        new Patch(security: "is_granted('ROLE_ADMIN')"),
         new Post(
             inputFormats: ['multipart' => ['multipart/form-data']],
             validationContext: ['groups' => ['Default', 'read']],
@@ -40,8 +40,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
             ],
             // deserialize: false,
         ),
-        new Put,
-        new Delete()
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage: 10,

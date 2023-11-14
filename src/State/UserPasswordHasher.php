@@ -13,13 +13,13 @@ final class UserPasswordHasher implements ProcessorInterface
     }
     public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
-        if ($data->getPassword()) {
+        if ($data->getClearPassword()) {
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $data,
-                $data->getPassword()
+                $data->getClearPassword()
             );
             $data->setPassword($hashedPassword);
-            // $data->eraseCredentials();
+            $data->eraseCredentials();
         }
 
         return $this->processor->process($data, $operation, $uriVariables, $context);
