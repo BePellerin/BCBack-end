@@ -36,7 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ),
         new GetCollection(),
         new GetCollection(
-            routeName: 'app_data_user', name: 'app_data_user'
+            routeName: 'get_me', name: 'get_me'
         ),
         new Patch(
             security: "is_granted('ROLE_ADMIN') or object.getUser() == user"

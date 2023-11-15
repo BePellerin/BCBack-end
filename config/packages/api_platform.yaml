@@ -13,11 +13,11 @@ api_platform:
     patch_formats:
         mime_types: ['multipart/form-data']
         json: ['application/merge-patch+json']    
-    # swagger:
-    #      api_keys:
-    #          JWT:
-    #             name: Authorization
-    #             type: header    
+    swagger:
+         api_keys:
+             JWT:
+                name: Authorization
+                type: header    
     formats:
         json: ['application/json']
         jsonld: ['application/ld+json']
