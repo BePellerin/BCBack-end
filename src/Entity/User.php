@@ -84,6 +84,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read'])]
     private ?int $id = null;
 
+    // #[ApiProperty(identifier: true)]
+    // #[Groups(['read'])]
+    // private ?int $userId = null;
+
     #[ORM\Column(length: 180, unique: true)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
@@ -198,6 +202,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $createdAt;
 
+    // #[ORM\Column(type: 'json', nullable: true)]
+    // private $customData;
+
     public function __toString()
     {
         return $this->email;
@@ -210,8 +217,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->collecs = new ArrayCollection();
         $this->nfts = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        // $this->id = 0;
     }
 
+    // public function getCustomUserInformations(): ?array
+    // {
+    //     // Remplacez cela par la logique permettant de récupérer les informations personnalisées de l'utilisateur
+    //     return ['custom_data' => $this->customData];
+    // }
+
+    /**
+     * @see UserInterface
+     */
     public function getId(): ?int
     {
         return $this->id;
@@ -230,13 +247,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
      *
      * @see UserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string) $this->id;
     }
 
     /**
@@ -245,7 +261,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
