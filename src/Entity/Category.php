@@ -7,9 +7,38 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    types: ['%kernel.project_dir%/public/images/avatarPict', '%kernel.project_dir%/public/images/CoverPict'],
+    operations: [
+        new Get(
+            // normalizationContext: ['groups' => ['read']]
+        ),
+        new GetCollection(),
+        new Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user"),
+        new Post(
+            denormalizationContext: [
+                'groups' => ['write'],
+                // 'disable_type_enforcement' => true,
+                'collect_denormalization_errors' => true
+            ],
+            inputFormats: ['multipart' => ['multipart/form-data']],
+            // uriTemplate: '/categories/{id}',
+            // itemUriTemplate: '/categories/{id}'
+        ),
+        new Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user")
+    ],
+    paginationItemsPerPage: 25,
+    paginationMaximumItemsPerPage: 25,
+    paginationClientItemsPerPage: true
+)]
 class Category
 {
     #[ORM\Id]

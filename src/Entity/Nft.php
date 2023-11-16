@@ -87,6 +87,7 @@ class Nft
     #[Assert\GreaterThanOrEqual(0)]
     private ?string $price = null;
 
+    // #[ORM\Column(length: 255, nullable: true)]
     #[ApiProperty(types: ['%kernel.project_dir%/public/images/airDrops'])]
     #[Groups(['read', 'write'])]
     public ?string $contentUrl = null;

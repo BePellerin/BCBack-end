@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 // #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
-    types: ['%kernel.project_dir%/public/images/avatarPict','%kernel.project_dir%/public/images/CoverPict'],
+    types: ['%kernel.project_dir%/public/images/avatarPict', '%kernel.project_dir%/public/images/CoverPict'],
     operations: [
         new Get(
             // normalizationContext: ['groups' => ['read']]
@@ -39,11 +39,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             denormalizationContext: [
                 'groups' => ['write'],
-                // 'disable_type_enforcement' => true,
+                'disable_type_enforcement' => true,
                 'collect_denormalization_errors' => true
             ],
-            inputFormats: ['multipart' => ['multipart/form-data']]
-            // deserialize: false,
+            inputFormats: ['multipart' => ['multipart/form-data']],
+            // uriTemplate: '/collecs/{id}',
+            // itemUriTemplate: '/collecs/{id}'
         ),
         new Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user")
     ],
@@ -101,7 +102,6 @@ class Collecs
     #[Groups(['read', 'write'])]
     private Collection $nfts;
 
-    // #[ORM\ManyToOne(inversedBy: 'collecs')]
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'collecs')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['read', 'write'])]
@@ -115,7 +115,6 @@ class Collecs
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['read', 'write'])]
     private ?User $user = null;
-
 
     #[ApiProperty(types: ['%kernel.project_dir%/public/images/avatarPict'])]
     #[Groups(['read', 'write'])]
