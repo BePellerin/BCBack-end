@@ -18,9 +18,7 @@ use ApiPlatform\Metadata\Post;
     normalizationContext: ['groups' => ['read']],
     types: ['%kernel.project_dir%/public/images/avatarPict', '%kernel.project_dir%/public/images/CoverPict'],
     operations: [
-        new Get(
-            // normalizationContext: ['groups' => ['read']]
-        ),
+        new Get(),
         new GetCollection(),
         new Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user"),
         new Post(
@@ -29,9 +27,7 @@ use ApiPlatform\Metadata\Post;
                 // 'disable_type_enforcement' => true,
                 'collect_denormalization_errors' => true
             ],
-            inputFormats: ['multipart' => ['multipart/form-data']],
-            // uriTemplate: '/categories/{id}',
-            // itemUriTemplate: '/categories/{id}'
+            inputFormats: ['multipart' => ['multipart/form-data']]
         ),
         new Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user")
     ],

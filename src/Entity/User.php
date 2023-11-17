@@ -26,32 +26,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: [
-        'groups' => ['write']
-        // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
-    ],
+        'groups' => ['write']],
     types: ['%kernel.project_dir%/public/images/user'],
     operations: [
         new Get(
             // normalizationContext: ['groups' => ['read']]
     ),
         new GetCollection(),
-        new GetCollection(
-            routeName: 'get_me', name: 'get_me'
-        ),
         new Patch(
             security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
     ),
-        // new Post(
-        //     denormalizationContext: [
-        //         'groups' => ['write'],
-        //         'disable_type_enforcement' => true,
-        //         'collect_denormalization_errors' => true
-        //     ],
-        //     validationContext:['groups' => ['write']],
-        //     processor: UserPasswordHasher::class,
-        //     inputFormats: ['multipart' => ['multipart/form-data']],
-        //     deserialize: false,
-        // ),
         new Delete(
             security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
         ),
@@ -60,11 +44,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
     paginationMaximumItemsPerPage: 20,
     paginationClientItemsPerPage: true
 )]
-// #[Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user")]
 #[Get()]
 #[Post(
-    // controller: UserController::class,
-    // controller: UserCrudController::class,
     denormalizationContext: [
         'groups' => ['write'],
         'disable_type_enforcement' => true,

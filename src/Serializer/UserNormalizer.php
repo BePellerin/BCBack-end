@@ -3,10 +3,6 @@
 
 namespace App\Serializer;
 
-use App\Entity\AirDrop;
-use App\Entity\Collecs;
-use App\Entity\MediaObject;
-use App\Entity\Nft;
 use App\Entity\User;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;

@@ -4,7 +4,6 @@
 namespace App\Serializer;
 
 use App\Entity\AirDrop;
-use App\Entity\MediaObject;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
@@ -25,7 +24,6 @@ final class AirDropNormalizer implements ContextAwareNormalizerInterface, Normal
         $context[self::ALREADY_CALLED] = true;
 
         $object->contentUrl = $this->storage->resolveUri($object, 'imageFile');
-        // $object->contentUrl = str_replace(' ', '%20', $this->storage->resolveUri($object, 'imageFile'));
 
         return $this->normalizer->normalize($object, $format, $context);
     }

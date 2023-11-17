@@ -2,9 +2,7 @@
 // api/src/Serializer/MediaObjectNormalizer.php
 
 namespace App\Serializer;
-
-use App\Entity\AirDrop;
-use App\Entity\MediaObject;
+ 
 use App\Entity\Nft;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
