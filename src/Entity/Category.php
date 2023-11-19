@@ -29,7 +29,9 @@ use ApiPlatform\Metadata\Post;
             ],
             inputFormats: ['multipart' => ['multipart/form-data']]
         ),
-        new Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user")
+        new Delete(
+            // security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
+        )
     ],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,

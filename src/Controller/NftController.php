@@ -10,10 +10,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/nft')]
+// #[AsController]
 class NftController extends AbstractController
 {
     
@@ -26,7 +28,7 @@ class NftController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_nft_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_nft_new', methods: ['GET','POST', 'PUT', 'PATCH'])]
     #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -56,7 +58,7 @@ class NftController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_nft_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_nft_edit', methods: ['GET', 'POST', 'PUT', 'PATCH'])]
     #[IsGranted("ROLE_ADMIN", "ROLE_USER")]
     public function edit(Request $request, Nft $nft, EntityManagerInterface $entityManager): Response
     {

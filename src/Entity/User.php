@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\State\UserPasswordHasher;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -26,18 +27,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: [
-        'groups' => ['write']],
-    types: ['%kernel.project_dir%/public/images/user'],
+        'groups' => ['write']
+    ],
+    types: ['%kernel.project_dir%/public/images/users'],
     operations: [
-        new Get(
-            // normalizationContext: ['groups' => ['read']]
-    ),
+        new Get(),
         new GetCollection(),
-        new Patch(
-            security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
-    ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
+            // security: "is_granted('ROLE_USER')"
+            // security: "is_granted('ROLE_ADMIN','ROLE_USER')"
+        ),
+        new Put(
+            denormalizationContext: [
+                'groups' => ['write'],
+                'disable_type_enforcement' => true,
+                'collect_denormalization_errors' => true
+                // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
+            ],
+            validationContext: ['groups' => ['write']],
+            processor: UserPasswordHasher::class,
+            inputFormats: ['multipart' => ['multipart/form-data'], 'json' => ['application/json']],
         ),
     ],
     paginationItemsPerPage: 20,
@@ -45,6 +54,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
     paginationClientItemsPerPage: true
 )]
 #[Get()]
+#[Put(
+    denormalizationContext: [
+        'groups' => ['write'],
+        'disable_type_enforcement' => true,
+        'collect_denormalization_errors' => true
+        // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
+    ],
+    validationContext: ['groups' => ['write']],
+    processor: UserPasswordHasher::class,
+    inputFormats: ['multipart' => ['multipart/form-data'], 'json' => ['application/json']],
+)]
 #[Post(
     denormalizationContext: [
         'groups' => ['write'],
@@ -70,11 +90,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     // private ?int $userId = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Email(
         message: 'Cette Email n\'est pas valide.',
     )]
+    #[Groups(['read', 'write'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -102,7 +122,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $clearPassword = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 5,
@@ -110,6 +129,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         minMessage: 'Le minimum est de 5 caractères',
         maxMessage: 'Le maximum est de 25 caractères'
     )]
+    #[Groups(['read', 'write'])]
     private ?string $username = null;
 
     #[ORM\Column(length: 50, nullable: true)]
@@ -124,7 +144,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read', 'write'])]
     private ?bool $status = true;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: true, type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
@@ -152,12 +172,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read', 'write'])]
     private Collection $nfts;
 
-    #[ApiProperty(types: ['%kernel.project_dir%/public/images/users'])]
+    // #[ApiProperty(types: ['%kernel.project_dir%/public/images/users'])]
     #[Groups(['read', 'write'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: 'user', fileNameProperty: 'imageName')]
-    #[Groups(['read', 'write'])]
     #[Assert\File(
         maxSize: '1m',
         extensions: ['jpg', 'png'],
@@ -173,6 +192,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         minHeightMessage: "La hauteur de l'image doit être au moins de 100 pixels",
         maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 1500 pixels"
     )]
+    #[Groups(['read', 'write'])]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
@@ -434,17 +454,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
 
     public function getContentUrl(): ?string
     {
@@ -458,13 +467,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+   
+
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
 
         if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
             $this->updatedAt = new \DateTimeImmutable();
         }
     }
@@ -482,6 +491,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable

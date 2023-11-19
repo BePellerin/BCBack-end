@@ -1,18 +1,21 @@
 api_platform:
     title: Hello API Platform
     version: 1.0.0
-    # Good defaults for REST APIs
+    http_cache:
+        invalidation:
+            enabled: true
+            varnish_urls: ['%env(VARNISH_URL)%']
+        public: true
     defaults:
         stateless: true
         cache_headers:
+            max_age: 0
+            shared_max_age: 3600
             vary: ['Content-Type', 'Authorization', 'Origin']
         extra_properties:
             standard_put: true
     mapping:
-        paths: ['%kernel.project_dir%/src/Entity']   
-    patch_formats:
-        mime_types: ['multipart/form-data']
-        json: ['application/merge-patch+json']    
+        paths: ['%kernel.project_dir%/src/Entity']    
     swagger:
          api_keys:
              JWT:
@@ -23,106 +26,6 @@ api_platform:
         jsonld: ['application/ld+json']
         html: ['text/html']
         multipart: ['multipart/form-data']
-    # formats:
-    #     jsonld:
-    #         mime_types:
-    #             - application/ld+json
-    #     json:
-    #         mime_types:
-    #             - application/json
-    #     html:
-    #         mime_types:
-    #             - text/html
-    # formdata:
+    # patch_formats:
     #     mime_types: ['multipart/form-data']
-# resources:
-#     App\Entity\Nft:
-#         collectionOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             post:
-#                 denormalization_context:
-#                     groups: ['write']
-#         itemOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             put:
-#                 denormalization_context:
-#                     groups: ['write']
-    # App\Entity\User:
-    #     collectionOperations:
-    #         get:
-    #             normalization_context:
-    #                 groups: ['read']
-    #         post:
-    #             denormalization_context:
-    #                 groups: ['write']
-    #     itemOperations:
-    #         get:
-    #             normalization_context:
-    #                 groups: ['read']
-    #         put:
-    #             denormalization_context:
-    #                 groups: ['write']
-#     App\Entity\History:
-#         collectionOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             post:
-#                 denormalization_context:
-#                     groups: ['write']
-#         itemOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             put:
-#                 denormalization_context:
-#                     groups: ['write']
-#     App\Entity\Collecs:
-#         collectionOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             post:
-#                 denormalization_context:
-#                     groups: ['write']
-#         itemOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             put:
-#                 denormalization_context:
-#                     groups: ['write']
-#     App\Entity\Category:
-#         collectionOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             post:
-#                 denormalization_context:
-#                     groups: ['write']
-#         itemOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             put:
-#                 denormalization_context:
-#                     groups: ['write']
-#     App\Entity\AirDrop:
-#         collectionOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             post:
-#                 denormalization_context:
-#                     groups: ['write']
-#         itemOperations:
-#             get:
-#                 normalization_context:
-#                     groups: ['read']
-#             put:
-#                 denormalization_context:
-#                     groups: ['write']
+    #     json: ['application/merge-patch+json']   

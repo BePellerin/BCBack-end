@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\CollecsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,7 +30,14 @@ use Symfony\Component\Validator\Constraints as Assert;
             // normalizationContext: ['groups' => ['read']]
         ),
         new GetCollection(),
-        new Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user"),
+        new Put(
+            denormalizationContext: [
+                'groups' => ['write'],
+                'disable_type_enforcement' => true,
+                'collect_denormalization_errors' => true
+            ],
+            inputFormats: ['multipart' => ['multipart/form-data']],
+        ),
         new Post(
             denormalizationContext: [
                 'groups' => ['write'],
@@ -37,14 +45,23 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'collect_denormalization_errors' => true
             ],
             inputFormats: ['multipart' => ['multipart/form-data']],
-            // uriTemplate: '/collecs/{id}',
-            // itemUriTemplate: '/collecs/{id}'
+
         ),
-        new Delete(security: "is_granted('ROLE_ADMIN') or object.getUser() == user")
+        new Delete(
+            // security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
+        )
     ],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,
     paginationClientItemsPerPage: true
+)]
+#[Put(
+    denormalizationContext: [
+        'groups' => ['write'],
+        'disable_type_enforcement' => true,
+        'collect_denormalization_errors' => true
+    ],
+    inputFormats: ['multipart' => ['multipart/form-data']],
 )]
 class Collecs
 {

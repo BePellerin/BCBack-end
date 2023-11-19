@@ -42,7 +42,9 @@ use Symfony\Component\String\Slugger\SluggerInterface;
             ],
             // deserialize: false,
         ),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Delete(
+            // security: "is_granted('ROLE_ADMIN')"
+    ),
     ],
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage: 10,

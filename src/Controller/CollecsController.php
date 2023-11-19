@@ -24,7 +24,7 @@ class CollecsController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_collecs_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_collecs_new', methods: ['GET', 'POST','PUT'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $collec = new Collecs();
@@ -52,7 +52,7 @@ class CollecsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_collecs_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_collecs_edit', methods: ['GET', 'POST','PUT'])]
     public function edit(Request $request, Collecs $collec, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CollecsType::class, $collec);

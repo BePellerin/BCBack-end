@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class LoginAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -22,7 +23,8 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    public function __construct(private UrlGeneratorInterface $urlGenerator,
+        private TokenStorageInterface $tokenStorage)
     {
     }
 
@@ -44,6 +46,9 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+
+        // $this->supprimerSessionEnCours($request);
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
@@ -56,4 +61,22 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
+
+    // private function supprimerSessionEnCours(Request $request): void
+    // {
+    //     // Insérer le code pour supprimer la session en cours
+    //     // Par exemple, vous pouvez utiliser le TokenStorage pour accéder à l'utilisateur actuellement authentifié
+    //     $token = $this->tokenStorage->getToken();
+
+    //     if ($token !== null) {
+    //         // Récupérez l'utilisateur depuis le token
+    //         $user = $token->getUser();
+
+    //         // Ajoutez le code pour supprimer la session en cours en fonction de l'utilisateur
+    //         // ...
+
+    //         // Exemple : Supprimer la session Symfony
+    //         $request->getSession()->invalidate();
+    //     }
+    // }
 }
