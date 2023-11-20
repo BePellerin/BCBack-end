@@ -12,15 +12,17 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
-    types: ['%kernel.project_dir%/public/images/avatarPict', '%kernel.project_dir%/public/images/CoverPict'],
     operations: [
         new Get(),
         new GetCollection(),
-        new Patch(security: "is_granted('ROLE_ADMIN') or object.getUser() == user"),
+        new Patch(
+            // security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
+    ),
         new Post(
             denormalizationContext: [
                 'groups' => ['write'],
@@ -42,9 +44,11 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $libelle = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Collecs::class)]

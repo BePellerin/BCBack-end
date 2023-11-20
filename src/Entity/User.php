@@ -37,45 +37,40 @@ use Symfony\Component\Serializer\Annotation\Groups;
             // security: "is_granted('ROLE_USER')"
             // security: "is_granted('ROLE_ADMIN','ROLE_USER')"
         ),
-        new Put(
+        new Post(
             denormalizationContext: [
                 'groups' => ['write'],
                 'disable_type_enforcement' => true,
                 'collect_denormalization_errors' => true
-                // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
             ],
             validationContext: ['groups' => ['write']],
             processor: UserPasswordHasher::class,
             inputFormats: ['multipart' => ['multipart/form-data'], 'json' => ['application/json']],
         ),
+        new Post(
+            uriTemplate: '/users/{id}',
+            denormalizationContext: [
+                'groups' => ['write'],
+                'disable_type_enforcement' => true,
+                'collect_denormalization_errors' => true
+            ],
+            validationContext: ['groups' => ['write']],
+            processor: UserPasswordHasher::class,
+            inputFormats: ['multipart' => ['multipart/form-data']],
+        ),
+        // new Patch(
+        //     denormalizationContext: [
+        //         'groups' => ['write'],
+        //         'disable_type_enforcement' => true,
+        //         'collect_denormalization_errors' => true
+        //     ],
+        //     inputFormats: ['multipart' => ['multipart/form-data']],
+        //     outputFormats: ['jsonld' => ['application/ld+json']],
+        // ),
     ],
     paginationItemsPerPage: 20,
     paginationMaximumItemsPerPage: 20,
     paginationClientItemsPerPage: true
-)]
-#[Get()]
-#[Put(
-    denormalizationContext: [
-        'groups' => ['write'],
-        'disable_type_enforcement' => true,
-        'collect_denormalization_errors' => true
-        // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
-    ],
-    validationContext: ['groups' => ['write']],
-    processor: UserPasswordHasher::class,
-    inputFormats: ['multipart' => ['multipart/form-data'], 'json' => ['application/json']],
-)]
-#[Post(
-    denormalizationContext: [
-        'groups' => ['write'],
-        'disable_type_enforcement' => true,
-        'collect_denormalization_errors' => true
-        // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
-    ],
-    validationContext: ['groups' => ['write']],
-    processor: UserPasswordHasher::class,
-    inputFormats: ['multipart' => ['multipart/form-data'], 'json' => ['application/json']],
-    // deserialize: false,
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

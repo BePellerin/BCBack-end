@@ -1,5 +1,4 @@
 <?php
-// api/src/Serializer/MediaObjectNormalizer.php
 
 namespace App\Serializer;
 
@@ -25,9 +24,6 @@ final class CollecNormalizer implements ContextAwareNormalizerInterface, Normali
 
         $object->contentUrlAvatar = $this->storage->resolveUri($object, 'avatarPict');
         $object->contentUrlCover = $this->storage->resolveUri($object, 'coverPict');
-
-        // $object->contentUrlAvatar = str_replace(' ', '_', $this->storage->resolveUri($object, 'avatarPict'));
-        // $object->contentUrlCover = str_replace(' ', '_', $this->storage->resolveUri($object, 'coverPict'));
 
         return $this->normalizer->normalize($object, $format, $context);
     }

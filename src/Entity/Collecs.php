@@ -16,12 +16,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: CollecsRepository::class)]
-// #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
     types: ['%kernel.project_dir%/public/images/avatarPict', '%kernel.project_dir%/public/images/CoverPict'],
@@ -30,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             // normalizationContext: ['groups' => ['read']]
         ),
         new GetCollection(),
-        new Put(
+        new Post(
             denormalizationContext: [
                 'groups' => ['write'],
                 'disable_type_enforcement' => true,
@@ -39,29 +40,30 @@ use Symfony\Component\Validator\Constraints as Assert;
             inputFormats: ['multipart' => ['multipart/form-data']],
         ),
         new Post(
+            uriTemplate: '/collecs/{id}',
             denormalizationContext: [
                 'groups' => ['write'],
                 'disable_type_enforcement' => true,
                 'collect_denormalization_errors' => true
             ],
             inputFormats: ['multipart' => ['multipart/form-data']],
-
         ),
+        // new Patch(
+        //     denormalizationContext: [
+        //         'groups' => ['write'],
+        //         'disable_type_enforcement' => true,
+        //         'collect_denormalization_errors' => true
+        //     ],
+        //     inputFormats: ['multipart' => ['multipart/form-data']],
+        //     outputFormats: ['jsonld' => ['application/ld+json']]
+        // ),
         new Delete(
             // security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
         )
     ],
     paginationItemsPerPage: 25,
     paginationMaximumItemsPerPage: 25,
-    paginationClientItemsPerPage: true
-)]
-#[Put(
-    denormalizationContext: [
-        'groups' => ['write'],
-        'disable_type_enforcement' => true,
-        'collect_denormalization_errors' => true
-    ],
-    inputFormats: ['multipart' => ['multipart/form-data']],
+    paginationClientItemsPerPage: true,
 )]
 class Collecs
 {
@@ -73,13 +75,13 @@ class Collecs
 
     #[ORM\Column(length: 50)]
     #[Groups(['read', 'write'])]
-    #[Assert\NotBlank]
     #[Assert\Length(
         min: 1,
         max: 50,
         minMessage: 'Le minimum est de 1 caractères',
         maxMessage: 'Le maximum est de 50 caractères'
     )]
+    #[Assert\NotBlank]
     private ?string $title = null;
 
     #[ORM\Column]
@@ -133,7 +135,6 @@ class Collecs
 
     #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageNameAvatar')]
     #[Groups(['read', 'write'])]
-    #[Assert\NotBlank]
     #[Assert\File(
         maxSize: '3m',
         extensions: ['jpg', 'png'],
@@ -334,11 +335,13 @@ class Collecs
     {
         $this->avatarPict = $avatarPict;
 
+
         if (null !== $avatarPict) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
             $this->updatedAtAvatar = new \DateTimeImmutable();
         }
+        // if ($avatarPict instanceof UploadedFile) {
+        //     $this->setUpdatedAtAvatar(new \DateTimeImmutable());
+        // }
     }
 
     public function getAvatarPict(): ?File
@@ -375,9 +378,10 @@ class Collecs
         $this->coverPict = $coverPict;
 
         if (null !== $coverPict) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
             $this->updatedAtCover = new \DateTimeImmutable();
+        }
+        if ($coverPict instanceof UploadedFile) {
+            $this->setUpdatedAtCover(new \DateTimeImmutable());
         }
     }
 

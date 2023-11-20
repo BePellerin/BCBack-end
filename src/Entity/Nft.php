@@ -21,26 +21,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use ApiPlatform\Metadata\ApiProperty;
-// use App\Controller\NftApiController;
-// use App\Controller\NftController;
-// use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: NftRepository::class)]
 #[ApiResource(
-    // collectionOperations:{
-    //       "get",
-    //       "post",
-    //       "patch"={"path"="/nfts/{id}"}
-    //   },
-    //   itemOperations:{
-    //       "get",
-    //       "patch"={"path"="/nfts/{id}"}
-    //   },
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: [
         'groups' => ['write']
-        // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
     ],
     types: ['%kernel.project_dir%/public/images/nfts'],
     operations: [
@@ -48,27 +35,34 @@ use ApiPlatform\Metadata\ApiProperty;
             // normalizationContext: ['groups' => ['read']]
         ),
         new GetCollection(),
-        //     new Patch(
-        //         security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
-        // ),
         new Post(
             denormalizationContext: [
                 'groups' => ['write'],
                 'disable_type_enforcement' => true,
                 'collect_denormalization_errors' => true
-                // AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false
             ],
             inputFormats: ['multipart' => ['multipart/form-data']],
-            // deserialize: false,
         ),
-        new Patch(
+        new Post(
+            uriTemplate: '/nfts/{id}',
             denormalizationContext: [
                 'groups' => ['write'],
-                // 'disable_type_enforcement' => true,
-                // 'collect_denormalization_errors' => true
+                'disable_type_enforcement' => true,
+                'collect_denormalization_errors' => true
             ],
-            // inputFormats: ['multipart' => ['multipart/form-data']],
+            inputFormats: ['multipart' => ['multipart/form-data']],
         ),
+        // new Patch(
+        //     denormalizationContext: [
+        //         'groups' => ['write'],
+        //         'disable_type_enforcement' => true,
+        //         'collect_denormalization_errors' => true
+        //     ],
+        //     // inputFormats: ['multipart' => ['multipart/form-data']],
+        //     // outputFormats: ['multipart' => ['multipart/form-data']],
+        //     outputFormats: ['jsonld' => ['application/ld+json']],
+        //     // outputFormats: ['json' => ['application/json']],
+        // ),
         new Delete(
             // security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
         ),
@@ -77,18 +71,6 @@ use ApiPlatform\Metadata\ApiProperty;
     paginationMaximumItemsPerPage: 25,
     paginationClientItemsPerPage: true
 )]
-// #[Patch(
-    
-//     controller: NftApiController::class,
-//     routeName: 'app_nft_edit',
-//     name: 'app_nft_edit',
-//     denormalizationContext: [
-//         'groups' => ['write'],
-//         'disable_type_enforcement' => true,
-//         'collect_denormalization_errors' => true
-//     ],
-//     inputFormats: ['multipart' => ['multipart/form-data']],
-// )]
 class Nft
 {
     #[ORM\Id]
