@@ -2,21 +2,18 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\NftRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use DateTime;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -29,12 +26,15 @@ use ApiPlatform\Metadata\ApiProperty;
     denormalizationContext: [
         'groups' => ['write']
     ],
-    types: ['%kernel.project_dir%/public/images/nfts'],
+    // types: ['%kernel.project_dir%/public/images/nfts'],
     operations: [
+        new GetCollection(
+            forceEager: false
+        ),
         new Get(
+            forceEager: false
             // normalizationContext: ['groups' => ['read']]
         ),
-        new GetCollection(),
         new Post(
             denormalizationContext: [
                 'groups' => ['write'],
@@ -52,25 +52,13 @@ use ApiPlatform\Metadata\ApiProperty;
             ],
             inputFormats: ['multipart' => ['multipart/form-data']],
         ),
-        // new Patch(
-        //     denormalizationContext: [
-        //         'groups' => ['write'],
-        //         'disable_type_enforcement' => true,
-        //         'collect_denormalization_errors' => true
-        //     ],
-        //     // inputFormats: ['multipart' => ['multipart/form-data']],
-        //     // outputFormats: ['multipart' => ['multipart/form-data']],
-        //     outputFormats: ['jsonld' => ['application/ld+json']],
-        //     // outputFormats: ['json' => ['application/json']],
-        // ),
-        new Delete(
-            // security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
-        ),
+        new Delete(),
     ],
-    paginationItemsPerPage: 25,
-    paginationMaximumItemsPerPage: 25,
-    paginationClientItemsPerPage: true
+    paginationItemsPerPage: 16,
+    paginationMaximumItemsPerPage: 16,
+    // paginationClientItemsPerPage: true
 )]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'start'])]
 class Nft
 {
     #[ORM\Id]
@@ -80,14 +68,12 @@ class Nft
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 1,
-        max: 50,
-        minMessage: 'Le minimum est de 1 caractères',
+    #[Assert\Length( 
+        max: 50, 
         maxMessage: 'Le maximum est de 50 caractères'
     )]
-    #[Groups(['read', 'write'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 750, nullable: true)]
@@ -104,29 +90,28 @@ class Nft
     #[Assert\GreaterThanOrEqual(0)]
     private ?string $price = null;
 
-    // #[ORM\Column(length: 255, nullable: true)]
+    // #[ORM\Column]
     #[ApiProperty(types: ['%kernel.project_dir%/public/images/nfts'])]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: 'nft', fileNameProperty: 'imageName')]
-    // #[Assert\NotBlank]
+    #[Groups(['write'])]
     #[Assert\File(
-        maxSize: '5m',
-        extensions: ['jpg', 'png', 'mp3'],
-        extensionsMessage: 'Merci de télécharger un fichier jpg, png ou mp3 de moins de 5 MB ',
+        maxSize: '20m',
+        extensions: ['jpg', 'png', 'mp3', 'gif', 'jpeg'],
+        extensionsMessage: 'Merci de télécharger un fichier jpg, png ou mp3 de moins de 20 MB ',
     )]
-    #[Assert\Image(
-        minWidth: 50,
-        maxWidth: 5000,
-        minHeight: 50,
-        maxHeight: 5000,
-        minWidthMessage: "La largeur de l'image doit être au moins de 50 pixels",
-        maxWidthMessage: "La largeur de l'image ne peut pas dépasser 5000 pixels",
-        minHeightMessage: "La hauteur de l'image doit être au moins de 50 pixels",
-        maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 5000 pixels"
-    )]
-    #[Groups(['read', 'write'])]
+    // #[Assert\Image(
+    //     minWidth: 50,
+    //     maxWidth: 5000,
+    //     minHeight: 50,
+    //     maxHeight: 5000,
+    //     minWidthMessage: "La largeur de l'image doit être au moins de 50 pixels",
+    //     maxWidthMessage: "La largeur de l'image ne peut pas dépasser 5000 pixels",
+    //     minHeightMessage: "La hauteur de l'image doit être au moins de 50 pixels",
+    //     maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 5000 pixels"
+    // )]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
@@ -138,7 +123,7 @@ class Nft
     private ?string $creator = null;
 
     #[ORM\ManyToOne(targetEntity: Collecs::class, inversedBy: 'nfts')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups(['read', 'write'])]
     private ?Collecs $collec = null;
 
@@ -148,12 +133,12 @@ class Nft
     private Collection $histories;
 
     #[ORM\ManyToOne(inversedBy: 'nfts')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups(['read', 'write'])]
     private ?User $user = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?\DateTimeImmutable $createdAt;
 
     public function __toString()

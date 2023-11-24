@@ -2,16 +2,11 @@
 
 namespace App\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use App\Controller\JsonResponse;
 use App\Entity\User as EntityUser;
-use Symfony\Component\Security\Core\User;
 
 class SecurityController extends AbstractController
 {
@@ -41,44 +36,4 @@ class SecurityController extends AbstractController
             // 'email' => $user->getEmail(),
         ]);
     }
-
-    // ---------------TEST 1--------------
-
-    // #[Route(path: '/api/login', name: 'api_login', methods: ['POST'])]
-    // public function api_login(): JsonResponse
-    // {
-    //     $user = $this->getUser();
-    //     return new Response([
-    //         'email' => $user->getEmail(),
-    //         'roles' => $user->getRoles()
-    //     ]);
-    // }
-
-    // ---------------TEST 2--------------
-
-
-    // #[Route(path: '/api/api_login', name: 'api_login', methods: ['POST'])]
-    // public function api_login(EntityManagerInterface $entityManager)
-    // {
-    //     if ($this->getUser()) {
-
-    //         return $this->redirectToRoute('home');
-    //     }
-    //     $userId = $this->getUser()->getUserIdentifier();
-
-    //     $user = $entityManager->getRepository(User::class)->find($userId);
-
-    //     if ($user && !$user->getStatus()) {
-    //         throw new CustomUserMessageAuthenticationException('Votre compte a été suspendu.');
-    //     }
-
-    //     $user = $this->getUser();
-    //     return $this->json([
-    //         'userIdentifier' => $user->getUserIdentifier(),
-    //         'roles' => $user->getRoles()
-    //     ]);
-    // }
-
-
-
 }

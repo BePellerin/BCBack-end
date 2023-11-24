@@ -1,13 +1,9 @@
 <?php
-// api/src/Encoder/MultipartDecoder.php
 
 namespace App\EventListener;
 
-use Doctrine\ORM\Mapping\Id;
-use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTAuthenticatedEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
-use App\Entity\User;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]

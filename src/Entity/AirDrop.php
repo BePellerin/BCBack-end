@@ -15,21 +15,19 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: AirDropRepository::class)]
 #[ApiResource(
-
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: ['groups' => ['write']],
-    types: ['%kernel.project_dir%/public/images/airDrops'],
+    // types: ['%kernel.project_dir%/public/images/airDrops'],
     operations: [
         new Get(
+            forceEager: false
             // normalizationContext: ['groups' => ['read']]
-    ),
-        new GetCollection(),
+        ),
+        new GetCollection(forceEager: false),
         new Patch(security: "is_granted('ROLE_ADMIN')"),
         new Post(
             inputFormats: ['multipart' => ['multipart/form-data']],
@@ -40,15 +38,14 @@ use Symfony\Component\String\Slugger\SluggerInterface;
                 'collect_denormalization_errors' => true
 
             ],
-            // deserialize: false,
         ),
         new Delete(
             // security: "is_granted('ROLE_ADMIN')"
-    ),
+        ),
     ],
-    paginationItemsPerPage: 10,
-    paginationMaximumItemsPerPage: 10,
-    paginationClientItemsPerPage: true,
+    // paginationItemsPerPage: 10,
+    // paginationMaximumItemsPerPage: 10,
+    // paginationClientItemsPerPage: true,
 )]
 class AirDrop
 {
@@ -59,12 +56,11 @@ class AirDrop
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?bool $status = false;
 
     #[ORM\Column(length: 20)]
     #[Groups(['read', 'write'])]
-    // #[Assert\NotBlank]
     #[Assert\Length(
         min: 5,
         max: 20,
@@ -74,12 +70,11 @@ class AirDrop
     private ?string $name = null;
 
     #[ORM\Column(length: 750)]
-    // #[Assert\NotBlank]
     #[Assert\Length(
         min: 10,
-        max: 750,
+        max: 150,
         minMessage: 'Le minimum est de 10 caractères',
-        maxMessage: 'Le maximum est de 750 caractères'
+        maxMessage: 'Le maximum est de 150 caractères'
     )]
     #[Groups(['read', 'write'])]
     private ?string $description = null;
@@ -89,7 +84,6 @@ class AirDrop
     private ?string $nftQuantity = null;
 
     #[ORM\Column(length: 255)]
-    // #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
     private ?string $category = null;
 
@@ -102,28 +96,26 @@ class AirDrop
     private ?string $webSiteUrl = null;
 
     #[ApiProperty(types: ['%kernel.project_dir%/public/images/airDrops'])]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: 'airDropPict', fileNameProperty: 'imageName')]
-    #[Groups(['read', 'write'])]
-    // #[Assert\NotNull(groups: ['media_object_create'])]
-    // #[Assert\NotBlank]
     #[Assert\File(
-        maxSize: '3000k',
-        extensions: ['jpg', 'png'],
+        maxSize: '3m',
+        extensions: ['jpg', 'png', 'gif', 'jpeg'],
         extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 3 MB',
     )]
-    #[Assert\Image(
-        minWidth: 50,
-        maxWidth: 5000,
-        minHeight: 50,
-        maxHeight: 5000,
-        minWidthMessage: "La largeur de l'image doit être au moins de 50 pixels",
-        maxWidthMessage: "La largeur de l'image ne peut pas dépasser 5000 pixels",
-        minHeightMessage: "La hauteur de l'image doit être au moins de 50 pixels",
-        maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 5000 pixels"
-    )]
+    // #[Assert\Image(
+    //     minWidth: 50,
+    //     maxWidth: 5000,
+    //     minHeight: 50,
+    //     maxHeight: 5000,
+    //     minWidthMessage: "La largeur de l'image doit être au moins de 50 pixels",
+    //     maxWidthMessage: "La largeur de l'image ne peut pas dépasser 5000 pixels",
+    //     minHeightMessage: "La hauteur de l'image doit être au moins de 50 pixels",
+    //     maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 5000 pixels"
+    // )]
+    #[Groups(['read', 'write'])]
     private ?File $imageFile = null;
 
 
@@ -150,7 +142,7 @@ class AirDrop
     private ?string $twitterUrl = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?\DateTimeImmutable $createdAt;
 
     #[ORM\Column(length: 255)]

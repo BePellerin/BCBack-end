@@ -6,10 +6,16 @@ controllers:
 
 api_login_check:
     path: /api/login_check
+    methods: ['POST']
     
 api_doc:
     path: /docs
     controller: api_platform.swagger_ui.action
+
+# app_login:
+#     path: /login
+#     controller: App\Controller\SecurityController::login
+
 # authentication_token:
 #     path: /api/login
 #     methods: ['GET','POST']

@@ -1,5 +1,4 @@
 <?php
-// api/src/Serializer/MediaObjectNormalizer.php
 
 namespace App\Serializer;
  
@@ -24,7 +23,7 @@ final class NftNormalizer implements ContextAwareNormalizerInterface, Normalizer
         $context[self::ALREADY_CALLED] = true;
 
         $object->contentUrl = $this->storage->resolveUri($object, 'imageFile');
-        // $object->contentUrl = str_replace(' ', '_', $this->storage->resolveUri($object, 'imageFile'));
+        
 
         return $this->normalizer->normalize($object, $format, $context);
     }

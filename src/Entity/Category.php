@@ -35,9 +35,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
             // security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
         )
     ],
-    paginationItemsPerPage: 25,
-    paginationMaximumItemsPerPage: 25,
-    paginationClientItemsPerPage: true
+    // paginationItemsPerPage: 25,
+    // paginationMaximumItemsPerPage: 25,
+    // paginationClientItemsPerPage: true
 )]
 class Category
 {

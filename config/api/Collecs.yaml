@@ -1,0 +1,4 @@
+App\Entity\Collecs:
+    operations:
+        ApiPlatform\Metadata\GetCollection:
+            filters: ['collecs.search_filter']

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use ApiPlatform\Metadata\Post;
 use App\Entity\AirDrop;
 use App\Form\AirDropType;
 use App\Repository\AirDropRepository;
@@ -12,12 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-// use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface as SerializationSerializerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile; 
 
 #[Route('/air/drop')]
 #[AsController]

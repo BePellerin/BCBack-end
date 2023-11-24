@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,9 +15,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\State\UserPasswordHasher;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -29,10 +29,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
     denormalizationContext: [
         'groups' => ['write']
     ],
-    types: ['%kernel.project_dir%/public/images/users'],
+    // types: ['%kernel.project_dir%/public/images/users'],
     operations: [
-        new Get(),
-        new GetCollection(),
+        new Get(forceEager: false),
+        new GetCollection(forceEager: false),
         new Delete(
             // security: "is_granted('ROLE_USER')"
             // security: "is_granted('ROLE_ADMIN','ROLE_USER')"
@@ -58,20 +58,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
             processor: UserPasswordHasher::class,
             inputFormats: ['multipart' => ['multipart/form-data']],
         ),
-        // new Patch(
-        //     denormalizationContext: [
-        //         'groups' => ['write'],
-        //         'disable_type_enforcement' => true,
-        //         'collect_denormalization_errors' => true
-        //     ],
-        //     inputFormats: ['multipart' => ['multipart/form-data']],
-        //     outputFormats: ['jsonld' => ['application/ld+json']],
-        // ),
     ],
-    paginationItemsPerPage: 20,
-    paginationMaximumItemsPerPage: 20,
-    paginationClientItemsPerPage: true
+    // paginationItemsPerPage: 20,
+    // paginationMaximumItemsPerPage: 20,
+    // paginationClientItemsPerPage: true
 )]
+#[ApiFilter(SearchFilter::class, properties: ['username' => 'start'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -79,10 +71,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups(['read'])]
     private ?int $id = null;
-
-    // #[ApiProperty(identifier: true)]
-    // #[Groups(['read'])]
-    // private ?int $userId = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
@@ -93,7 +81,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['read', 'write'])]
     private array $roles = ["ROLE_USER"];
 
     /**
@@ -113,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank(groups: ['user:create'])]
-    #[Groups(['read', 'write'])]
+    #[Groups(['write'])]
     private ?string $clearPassword = null;
 
     #[ORM\Column(length: 255)]
@@ -136,11 +123,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $walletAdress = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?bool $status = true;
 
     #[ORM\Column(nullable: true, type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['read', 'write'])]
+    #[Groups(['write'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 500, nullable: true)]
@@ -167,27 +154,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read', 'write'])]
     private Collection $nfts;
 
-    // #[ApiProperty(types: ['%kernel.project_dir%/public/images/users'])]
-    #[Groups(['read', 'write'])]
+    #[ApiProperty(types: ['%kernel.project_dir%/public/images/users'])]
+    #[Groups(['read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: 'user', fileNameProperty: 'imageName')]
     #[Assert\File(
-        maxSize: '1m',
-        extensions: ['jpg', 'png'],
-        extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 1 MB ',
+        maxSize: '3m',
+        extensions: ['jpg','png', 'jpeg'],
+        extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 3 MB ',
     )]
-    #[Assert\Image(
-        minWidth: 100,
-        maxWidth: 1500,
-        minHeight: 100,
-        maxHeight: 1500,
-        minWidthMessage: "La largeur de l'image doit être au moins de 100 pixels",
-        maxWidthMessage: "La largeur de l'image ne peut pas dépasser 1500 pixels",
-        minHeightMessage: "La hauteur de l'image doit être au moins de 100 pixels",
-        maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 1500 pixels"
-    )]
-    #[Groups(['read', 'write'])]
+    // #[Assert\Image(
+    //     minWidth: 100,
+    //     maxWidth: 1500,
+    //     minHeight: 100,
+    //     maxHeight: 1500,
+    //     minWidthMessage: "La largeur de l'image doit être au moins de 100 pixels",
+    //     maxWidthMessage: "La largeur de l'image ne peut pas dépasser 1500 pixels",
+    //     minHeightMessage: "La hauteur de l'image doit être au moins de 100 pixels",
+    //     maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 1500 pixels"
+    // )]
+    #[Groups(['write'])]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
@@ -195,7 +182,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $imageName = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?\DateTimeImmutable $createdAt;
 
     // #[ORM\Column(type: 'json', nullable: true)]

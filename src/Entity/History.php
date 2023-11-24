@@ -2,12 +2,37 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\HistoryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 
 #[ORM\Entity(repositoryClass: HistoryRepository::class)]
-#[ApiResource]
+#[ApiResource()]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: [
+        'groups' => ['write']
+    ],
+    // types: ['%kernel.project_dir%/public/images/users'],
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            denormalizationContext: [
+                'groups' => ['write'],
+                'disable_type_enforcement' => true,
+                'collect_denormalization_errors' => true
+            ],
+            validationContext: ['groups' => ['write']],
+            processor: UserPasswordHasher::class,
+            inputFormats: ['multipart' => ['multipart/form-data'], 'json' => ['application/json']],
+        )
+    ],
+)]
 class History
 {
     #[ORM\Id]
@@ -24,6 +49,7 @@ class History
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updateAt = null;
 
+    #[ApiProperty(fetchEager: true)]
     #[ORM\ManyToOne(inversedBy: 'histories')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Nft $nft = null;

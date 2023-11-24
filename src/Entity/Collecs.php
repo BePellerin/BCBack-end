@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Repository\CollecsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,7 +17,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -25,12 +24,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: CollecsRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
-    types: ['%kernel.project_dir%/public/images/avatarPict', '%kernel.project_dir%/public/images/CoverPict'],
+    denormalizationContext: [
+        'groups' => ['write']
+    ],
+    // types: ['%kernel.project_dir%/public/images/avatarPict', '%kernel.project_dir%/public/images/CoverPict'],
     operations: [
         new Get(
+            forceEager: false
             // normalizationContext: ['groups' => ['read']]
         ),
-        new GetCollection(),
+        new GetCollection(forceEager: false),
         new Post(
             denormalizationContext: [
                 'groups' => ['write'],
@@ -48,23 +51,15 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             inputFormats: ['multipart' => ['multipart/form-data']],
         ),
-        // new Patch(
-        //     denormalizationContext: [
-        //         'groups' => ['write'],
-        //         'disable_type_enforcement' => true,
-        //         'collect_denormalization_errors' => true
-        //     ],
-        //     inputFormats: ['multipart' => ['multipart/form-data']],
-        //     outputFormats: ['jsonld' => ['application/ld+json']]
-        // ),
         new Delete(
             // security: "is_granted('ROLE_ADMIN') or object.getUser() == user"
         )
     ],
-    paginationItemsPerPage: 25,
-    paginationMaximumItemsPerPage: 25,
-    paginationClientItemsPerPage: true,
+    // paginationItemsPerPage: 25,
+    // paginationMaximumItemsPerPage: 25,
+    // paginationClientItemsPerPage: true,
 )]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'start'])]
 class Collecs
 {
     #[ORM\Id]
@@ -84,21 +79,21 @@ class Collecs
     #[Assert\NotBlank]
     private ?string $title = null;
 
+    // #[ORM\Column]
+    // #[Groups(['read', 'write'])]
+    // #[Assert\NotBlank]
+    // private ?string $description = null;
+
     #[ORM\Column]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 50,
+        max: 750,
+        minMessage: 'Le minimum est de 50 caractères',
+        maxMessage: 'Le maximum est de 750 caractères'
+    )]
     private ?string $description = null;
-
-    // #[ORM\Column(length: 1500)]
-    // #[Groups(['read', 'write'])]
-    // #[Assert\NotBlank]
-    // #[Assert\Length(
-    //     min: 200,
-    //     max: 1500,
-    //     minMessage: 'Le minimum est de 200 caractères',
-    //     maxMessage: 'Le maximum est de 1500 caractères'
-    // )]
-    // private ?string $description = null;
 
 
     #[ORM\Column(length: 255)]
@@ -116,28 +111,29 @@ class Collecs
     private Collection $nfts;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'collecs')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups(['read', 'write'])]
     private ?Category $category = null;
 
     #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     private ?\DateTimeImmutable $createdAt;
 
+
+
     #[ORM\ManyToOne(inversedBy: 'collecs')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups(['read', 'write'])]
     private ?User $user = null;
 
-    #[ApiProperty(types: ['%kernel.project_dir%/public/images/avatarPict'])]
-    #[Groups(['read', 'write'])]
+    // #[ApiProperty(types: ['%kernel.project_dir%/public/images/avatarPict'])]
+    #[Groups(['read'])]
     public ?string $contentUrlAvatar = null;
 
     #[Vich\UploadableField(mapping: 'avatarPict', fileNameProperty: 'imageNameAvatar')]
-    #[Groups(['read', 'write'])]
     #[Assert\File(
         maxSize: '3m',
-        extensions: ['jpg', 'png'],
+        extensions: ['jpg', 'png', 'gif', 'jpeg'],
         extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 3 MB',
     )]
     // #[Assert\Image(
@@ -150,6 +146,7 @@ class Collecs
     //     minHeightMessage: "La hauteur de l'image doit être au moins de 100 pixels",
     //     maxHeightMessage: "La hauteur de l'image ne peut pas dépasser 1500 pixels"
     // )]
+    #[Groups(['write'])]
     private ?File $avatarPict = null;
 
     #[ORM\Column(nullable: true)]
@@ -157,19 +154,18 @@ class Collecs
     private ?string $imageNameAvatar = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $updatedAtAvatar = null;
 
 
     #[ApiProperty(types: ['%kernel.project_dir%/public/images/CoverPict'])]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read'])]
     public ?string $contentUrlCover = null;
 
     #[Vich\UploadableField(mapping: 'coverPict', fileNameProperty: 'imageNameCover')]
-    #[Groups(['read', 'write'])]
+    #[Groups(['write'])]
     #[Assert\File(
         maxSize: '5m',
-        extensions: ['jpg', 'png'],
+        extensions: ['jpg', 'png', 'gif', 'jpeg'],
         extensionsMessage: 'Merci de télécharger un fichier jpg ou png de moins de 5 MB',
     )]
     // #[Assert\Image(
@@ -189,7 +185,6 @@ class Collecs
     private ?string $imageNameCover = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read', 'write'])]
     private ?\DateTimeImmutable $updatedAtCover = null;
 
     public function __toString()

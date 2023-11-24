@@ -15,7 +15,6 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class LoginAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -23,8 +22,7 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator,
-        private TokenStorageInterface $tokenStorage)
+    public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
     }
 
@@ -46,37 +44,16 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-
-        // $this->supprimerSessionEnCours($request);
-
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
         // For example:
-       return new RedirectResponse($this->urlGenerator->generate('admin'));
+        return new RedirectResponse($this->urlGenerator->generate('admin'));
     }
 
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
-
-    // private function supprimerSessionEnCours(Request $request): void
-    // {
-    //     // Insérer le code pour supprimer la session en cours
-    //     // Par exemple, vous pouvez utiliser le TokenStorage pour accéder à l'utilisateur actuellement authentifié
-    //     $token = $this->tokenStorage->getToken();
-
-    //     if ($token !== null) {
-    //         // Récupérez l'utilisateur depuis le token
-    //         $user = $token->getUser();
-
-    //         // Ajoutez le code pour supprimer la session en cours en fonction de l'utilisateur
-    //         // ...
-
-    //         // Exemple : Supprimer la session Symfony
-    //         $request->getSession()->invalidate();
-    //     }
-    // }
 }

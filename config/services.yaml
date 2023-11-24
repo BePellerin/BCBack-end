@@ -6,6 +6,33 @@
 parameters:
 
 services:
+    user.search_filter:
+        parent: 'api_platform.doctrine.orm.search_filter'
+        arguments: [ { username: 'start' } ]
+        tags:  [ 'api_platform.filter' ]
+        # The following are mandatory only if a _defaults section is defined with inverted values.
+        # You may want to isolate filters in a dedicated file to avoid adding the following lines (by adding them in the defaults section)
+        autowire: false
+        autoconfigure: false
+        public: false
+    nft.search_filter:
+        parent: 'api_platform.doctrine.orm.search_filter'
+        arguments: [ { title: 'start' } ]
+        tags:  [ 'api_platform.filter' ]
+        # The following are mandatory only if a _defaults section is defined with inverted values.
+        # You may want to isolate filters in a dedicated file to avoid adding the following lines (by adding them in the defaults section)
+        autowire: false
+        autoconfigure: false
+        public: false
+    collecs.search_filter:
+        parent: 'api_platform.doctrine.orm.search_filter'
+        arguments: [ { title: 'start' } ]
+        tags:  [ 'api_platform.filter' ]
+        # The following are mandatory only if a _defaults section is defined with inverted values.
+        # You may want to isolate filters in a dedicated file to avoid adding the following lines (by adding them in the defaults section)
+        autowire: false
+        autoconfigure: false
+        public: false
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -27,18 +54,3 @@ services:
         arguments: [ '@request_stack' ]
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
-    # App\Entity\NftApiController:
-    #     tags: ['controller.service_arguments']
-        # arguments:
-        #     $passwordHasher: '@security.password_hasher'
-    # alias:
-    #     ApiPlatform\State\ProcessorInterface: api_platform.state_processor.locator
-    # App\ApiResource\hashPassword:
-    #     bind:
-    #         $processor: '@api_platform.doctrine.orm.state.persist_processor'
-    # App\Entity\Nft:
-    #     arguments:
-    #         $tokenStorage: '@security.token_storage'
-
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones

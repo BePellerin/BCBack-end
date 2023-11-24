@@ -1,5 +1,4 @@
 <?php
-// api/src/Serializer/PlainIdentifierDenormalizer
 
 namespace App\Serializer;
 

@@ -1,0 +1,4 @@
+App\Entity\Nft:
+    operations:
+        ApiPlatform\Metadata\GetCollection:
+            filters: ['nft.search_filter']
